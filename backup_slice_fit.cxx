@@ -30,20 +30,10 @@
 
 
 
-//Used to store fitting variables----------
-struct FitResults{
-    double meanG; //mean value of Gaussian function
-    double widthG; //sigma of Gaussain
-    double mpvL; //mpv of Landau function
-    double sigmaL; //width of Landau
-    double mpvC; //mpv of convolution function
-};
-
-
 
 //==========================================================
 //Convoluted Landau + Gaussian fitting---
-FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRangeMax) {
+void CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRangeMax) {
     //Create a RooRealVar for the variable you are fitting
     RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
 
@@ -89,10 +79,6 @@ FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRang
             xPeak = xPos;
         }
     }
-
-    //store fitting results---
-    FitResults results;
-
     //--------------------------------------------------------------
 
     //clone the original histogram---
@@ -102,8 +88,6 @@ FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRang
     RooPlot* frame = x.frame(RooFit::Range(fitRangeMin, fitRangeMax));
     data.plotOn(frame, RooFit::DataError(RooAbsData::SumW2));
     convoluted.plotOn(frame, RooFit::Range(fitRangeMin, fitRangeMax));
-
-
 
     //Create a canvas and draw the frame
     TCanvas canvas("canvas", "Convoluted Landau + Gaussian Fit");
@@ -115,7 +99,7 @@ FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRang
     int ndf = convoluted.getParameters(data)->selectByAttrib("Constant", kFALSE)->getSize(); // number of degrees of freedom
     double chi2ndf = chi2 / ndf; // normalized chi-squared
 
-    //legend---------
+    //legend---
     TLegend legend(0.6, 0.6, 0.9, 0.9);
     legend.AddEntry(histClone, "Original Histogram", "l");
     legend.AddEntry(frame->getObject(0), "Convoluted Landau + Gaussian Fit", "l");
@@ -124,24 +108,6 @@ FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRang
     RooRealVar* var;
     while ((var = dynamic_cast<RooRealVar*>(iter.Next()))) {
         legend.AddEntry((TObject*)0, Form("%s = %.2f", var->GetName(), var->getVal()), "");
-
-        //store fitting results to struct---------
-        const char* varName = var->GetName();
-        double varValue = var->getVal();
-        if (strcmp(varName, "mean") == 0) {
-                results.meanG = varValue;
-        } 
-        else if (strcmp(varName, "width") == 0) {
-                results.widthG = varValue;
-        } 
-        else if (strcmp(varName, "mpv") == 0) {
-                results.mpvL = varValue;
-        } 
-        else if (strcmp(varName, "sigma") == 0) {
-                results.sigmaL = varValue;
-        }
-
-
     }
 
     //Add the MPV of the convoluted function
@@ -150,16 +116,154 @@ FitResults CLG(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRang
     //Add chi-squared information to the legend
     legend.AddEntry((TObject*)0, Form("#chi^2/ndf = %.2f", chi2ndf), "");
 
-    results.mpvC = xPeak; 
-
     legend.Draw("SAME");
-
 
     canvas.Write();//Save canvas into the ROOT file---
 //    frame->Write();//save fitting function---
 
-    return results;
+}
+//----------------------------------------------------------
 
+
+
+
+
+
+
+
+
+//==========================================================
+//Perform Landau fit (with maximum likelihood estimation)---
+void landauFit(TH1F* hist, TFile* outputFile){
+    //Create a RooRealVar for the variable you are fitting---
+    RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
+
+    //Create a RooDataHist from the TH1F---
+    RooDataHist data("data", "Data Histogram", x, RooFit::Import(*hist));
+
+    //Create a Landau PDF---
+    RooRealVar mpv("mpv", "Most Probable Value", 10, 1, 200);
+    RooRealVar sigma("sigma", "Sigma", 5, 0.1, 100);
+    RooLandau landau("landau", "Landau PDF", x, mpv, sigma);
+
+    //Perform the fit using maximum likelihood---
+    RooFitResult* fitResult = landau.fitTo(data, RooFit::Save(true));
+
+    //Access fit results---
+    fitResult->Print("v");
+
+    //clone the original histogram---
+    TH1F* histClone = (TH1F*)hist->Clone("histClone"); 
+
+    //Plot the result---
+    //SumW2: draw sqrt(content) error bars---
+    RooPlot* frame = x.frame();
+    data.plotOn(frame, RooFit::DataError(RooAbsData::SumW2));
+    landau.plotOn(frame);
+
+    TCanvas canvas("canvas", "Landau Fit with ML");
+    histClone->Draw();
+    frame->Draw("SAME");//Draw fitting function--- 
+
+    TLegend legend(0.6, 0.6, 0.9, 0.9);
+    legend.AddEntry(histClone, "Original Histogram", "l");
+    legend.AddEntry(frame->getObject(0), "Landau Fit", "l");
+    //Add fitting parameters to the legend
+    RooLinkedListIter iter = landau.getParameters(data)->iterator();
+    RooRealVar* var;
+    while ((var = dynamic_cast<RooRealVar*>(iter.Next()))) {
+        legend.AddEntry((TObject*)0, Form("%s = %.4f", var->GetName(), var->getVal()), "");
+    }
+
+    legend.Draw("SAME");
+
+    canvas.Write();//Save canvas into the ROOT file---
+    frame->Write();//save fitting function---
+    //Save the fit parameters (if needed)
+//    outputFile->cd();
+//    fitResult->Write(("fitParameters_" + std::string(hist->GetName())).c_str());
+
+}
+//----------------------------------------------------------
+
+
+
+
+
+
+
+
+//==========================================================
+//Landau + Gaussian fit (with mle)---
+void landauGaussianFit(TH1F* hist, TFile* outputFile) {
+    //Create a RooRealVar for the variable you are fitting
+    RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
+
+    //Create a RooDataHist from the TH1F
+    RooDataHist data("data", "Data Histogram", x, RooFit::Import(*hist));
+
+    //Create RooRealVar for Landau parameters
+    RooRealVar mpv("mpv", "Most Probable Value", 10, 1, 200);
+    RooRealVar sigma("sigma", "Sigma", 5, 0.1, 100);
+    //Create RooLandau PDF
+    RooLandau landau("landau", "Landau PDF", x, mpv, sigma);
+
+    //Create RooRealVar for Gaussian parameters
+    RooRealVar mean("mean", "Mean", 10, 1, 200);
+    RooRealVar width("width", "Width", 5, 0.1, 100);
+    // Create RooGaussian PDF
+    RooGaussian gaussian("gaussian", "Gaussian PDF", x, mean, width);
+
+    //Create RooRealVar for the mixture coefficient
+    RooRealVar landauFraction("landauFraction", "Landau Fraction", 0.001, 0, 0.001);
+
+    //Create RooAddPdf to combine Landau and Gaussian
+    RooAddPdf model("model", "Landau + Gaussian", RooArgList(landau, gaussian), RooArgList(landauFraction));
+
+    //Perform the fit using maximum likelihood
+    RooFitResult* fitResult = model.fitTo(data, RooFit::Save(true));
+
+    //Perform the fit using least squares 
+//    RooNumIntOptions::defaultMinimizerType(RooNumIntOptions::kLevenbergMarquardt);
+//    RooFitResult* fitResult = model.fitTo(data, RooFit::Save(true), RooFit::Minimizer("Minuit2", "Migrad"));
+
+
+    //clone the original histogram---
+    TH1F* histClone = (TH1F*)hist->Clone("histClone");
+
+    //Plot the result
+    RooPlot* frame = x.frame();
+    data.plotOn(frame, RooFit::DataError(RooAbsData::SumW2));
+    model.plotOn(frame);
+
+    //Create a canvas and draw the frame
+    TCanvas canvas("canvas", "Landau + Gaussian Fit");
+    histClone->Draw();
+    frame->Draw("SAME");//Draw fitting function---
+
+    //evaluate fitting, chi square method--
+    double chi2 = frame->chiSquare();//chi-squared value
+    int ndf = model.getParameters(data)->selectByAttrib("Constant", kFALSE)->getSize(); // number of degrees of freedom
+    double chi2ndf = chi2 / ndf; // normalized chi-squared
+
+    //legend---
+    TLegend legend(0.6, 0.6, 0.9, 0.9);
+    legend.AddEntry(histClone, "Original Histogram", "l");
+    legend.AddEntry(frame->getObject(0), "Landau + Gaussian Fit", "l");
+    //Add fitting parameters to the legend
+    RooLinkedListIter iter = model.getParameters(data)->iterator();
+    RooRealVar* var;
+    while ((var = dynamic_cast<RooRealVar*>(iter.Next()))) {
+        legend.AddEntry((TObject*)0, Form("%s = %.4f", var->GetName(), var->getVal()), "");
+    }
+
+    //Add chi-squared information to the legend
+    legend.AddEntry((TObject*)0, Form("Chi^2/ndf = %.3f", chi2ndf), "");
+
+    legend.Draw("SAME");
+
+    canvas.Write();//Save canvas into the ROOT file---
+//    frame->Write();//save fitting function---
 }
 //----------------------------------------------------------
 
@@ -241,7 +345,6 @@ void combineBins(TH1F* originalHist) {
 
 //==========================================================
 //output the position of right border of the hist
-//ouput the most right bin is not zero entry
 double rightBorder(TH1F* hist){
     //Find the bin with the maximum entry
     int binMax = hist->GetMaximumBin();
@@ -322,53 +425,6 @@ double leftBorder(TH1F* hist) {
 
 
 
-
-
-//==========================================================
-//Draw mpv values on initial TH2F plot------
-void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mpvConv, int nPoints, TFile* outputFile) {
-    // Create a TGraph for scatter points
-    TGraph* scatterGraph = new TGraph(nPoints, distances, mpvConv);
-
-    // Create a TGraph for linear connections
-    TGraph* lineGraph = new TGraph(nPoints, distances, mpvConv);
-    lineGraph->SetLineColor(kRed);  // Set line color to blue
-    lineGraph->SetLineWidth(1);      // Set line width
-
-    // Create a canvas
-    TCanvas canvas("mpvOnTh2F", "Fitting results with MPV values", 800, 600);
-
-    // Draw the 2D histogram
-    hist2D->Draw("colz");
-
-    // Draw scatter points
-    scatterGraph->SetMarkerStyle(20);  // Set marker style to a filled circle
-    scatterGraph->SetMarkerSize(0.6);  // Set marker size
-    scatterGraph->SetMarkerColor(kRed);
-    scatterGraph->Draw("P");
-
-    // Draw linear connections
-    lineGraph->Draw("L");
-
-    // Save the canvas to the output ROOT file
-    canvas.Write();
-
-    // Clean up memory
-    delete scatterGraph;
-    delete lineGraph;
-}
-//----------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
 //==========================================================
 //Main function!---
 void slice_fit(){
@@ -386,11 +442,7 @@ void slice_fit(){
     }
     //-------------------------------------------
 
-    FitResults tmpResults; //used to tmporarily store fitResults---
-    Double_t mpvConv[60];
-
-
-    //Open the input root file----------------------------------------------------
+    //Open the input root file---
     TFile* inputFile = new TFile(TString(file_path)+TString(file_suffix), "READ");
 
     //Check if the file is open---
@@ -409,12 +461,15 @@ void slice_fit(){
     }
 
     //Create an array of TH1F histograms to store extracted data---
-    //num = 60 here!---
     const int num = sizeof(distances)/sizeof(distances[0]);
     TH1F* hists[num];
 
+    //Draw all TH1Fs in one canvas---
+    TCanvas* canvas = new TCanvas("canvas", "All Histograms", 800, 600);
+    //Add a legend(optional)---
+    TLegend* legend = new TLegend(0.7, 0.7, 0.9, 0.9);
 
-    //Extract values from TH2F and create TH1F---
+    //Extract values for each distance value and create TH1F histograms---
     for(int i=0; i<num; ++i){
         double x = distances[i];
         int binX = inputTH2F->GetXaxis()->FindBin(x);
@@ -435,13 +490,25 @@ void slice_fit(){
         //Set the line color for each TH1F(optional)---
         hists[i]->SetLineColor(i + 1);
 
+        //Draw each TH1F on the canvas---
+        if(i==0){
+            hists[i]->Draw();
+        } 
+        else{
+            hists[i]->Draw("SAME");
+        }
+
+        legend->AddEntry(hists[i], Form("Dis = %.1f cm", distances[i]), "l");
+
     }
-
-
-
 
     //Open the output ROOT file for writing---
     TFile* outputFile = new TFile(TString(output_path)+TString(output_name)+"_"+TString(file_suffix), "RECREATE");
+
+    //plot containing several histos---
+    legend->Draw("SAME");
+    canvas->Write();
+    legend->Write();
 
     double borderL = 0.0;
     double borderR = 0.0;
@@ -458,31 +525,22 @@ void slice_fit(){
             combineBins(hists[i]);
         }
 
+//        landauFit(hists[i], outputFile);//apply Landau fitting---
+//        landauGaussianFit(hists[i], outputFile);//Landau + Gaussian---
         borderR = rightBorder(hists[i]);
-        borderL = leftBorder(hists[i]); 
+        borderL = leftBorder(hists[i]);        
+        CLG(hists[i], outputFile, borderL, borderR);
 
-        tmpResults = CLG(hists[i], outputFile, borderL, borderR);
-        mpvConv[i] = tmpResults.mpvC * 1000.0;
-
-//        hists[i]->Write();
-
-
-    }
-    
-    //Draw mpvConv on TH2F---
-    DrawScatterWithLine(inputTH2F, distances, mpvConv, num, outputFile);
-
-    //Create a subdirectory within the output file
-    TDirectory* histDirectory = outputFile->mkdir("Initial_Hist");
-    histDirectory->cd();
-    for(int i=0; i<num; ++i){
         hists[i]->Write();
     }
-    
-    //Close the input and output files---
-    outputFile->Close();
-    inputFile->Close();
 
+    //copy the initial TH2F to outputFile---
+    inputTH2F->SetDirectory(outputFile);
+    inputTH2F->Write();
+
+    //Close the input and output files---
+    inputFile->Close();
+    outputFile->Close();
 
 }
 //----------------------------------------------------------
