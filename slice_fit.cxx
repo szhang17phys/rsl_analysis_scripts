@@ -123,6 +123,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
     //legend---------
     TLegend legend(0.6, 0.6, 0.9, 0.9);
+    legend.SetTextSize(0.06);
     legend.AddEntry(histClone, "Original Histogram", "l");
     legend.AddEntry(frame->getObject(0), "Convoluted Landau + Gaussian Fit", "l");
     //Add fitting parameters to the legend
@@ -325,7 +326,8 @@ FitResults CLG2(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
     //legend---------
-    TLegend legend(0.6, 0.6, 0.9, 0.9);
+    TLegend legend(0.5, 0.45, 0.9, 0.9);
+    legend.SetTextSize(0.03);
     legend.AddEntry(histClone, "Original Histogram", "l");
     legend.AddEntry(frame->getObject(0), "Convoluted Landau + Gaussian Fit", "l");
     //Add fitting parameters to the legend
@@ -355,12 +357,15 @@ FitResults CLG2(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
     //Add the MPV of the convoluted function
     legend.AddEntry((TObject*)0, Form("MPV of Conv = %.2f", xPeak), "");
+    //Add the MPV of the convoluted function
+    legend.AddEntry((TObject*)0, Form("#sigma of Conv = %.2f", sigConv), "");
 
     //Add chi-squared information to the legend
-    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
+//    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
 
 
     results.mpvC = xPeak; 
+    results.sigC = sigConv;
     legend.Draw("SAME");
 
     canvas.Write();//Save canvas into the ROOT file---
@@ -535,9 +540,14 @@ double leftBorder(TH1F* hist) {
 
 //==========================================================
 //Draw mpv values on initial TH2F plot------
-void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mpvConv, int nPoints, TFile* outputFile) {
-    // Create a TGraph for scatter points
-    TGraph* scatterGraph = new TGraph(nPoints, distances, mpvConv);
+void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mpvConv, const double* sigConv, int nPoints, TFile* outputFile) {
+    //Create a TGraph for scatter points
+    //TGraph* scatterGraph = new TGraph(nPoints, distances, mpvConv);
+
+    //Create a TGraphErrors object
+    TGraphErrors* scatterGraph = new TGraphErrors(nPoints, distances, mpvConv, nullptr, sigConv);
+    scatterGraph->SetLineColor(kRed);
+
 
     // Create a TGraph for linear connections
     TGraph* lineGraph = new TGraph(nPoints, distances, mpvConv);
@@ -587,16 +597,20 @@ void slice_fit(){
     string output_path = "../results/fit_Develop/";
     string output_name = "fitCLG2";
 
+    //store fitting results at txt file---
+    std::ofstream outputTxt("../results/fit_Develop/rsl99_fit.txt");
+
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
     Double_t distances[60];
     for (int i=0; i<60; ++i){
         distances[i] = 5*i + 2.5;
     }
-    //-------------------------------------------
+    //--------------------------------------------------
 
     FitResults tmpResults; //used to tmporarily store fitResults---
     Double_t mpvConv[60];
+    Double_t sigConv[60];
 
 
     //Open the input root file----------------------------------------------------
@@ -646,9 +660,6 @@ void slice_fit(){
 
     }
 
-
-
-
     //Open the output ROOT file for writing---
     TFile* outputFile = new TFile(TString(output_path)+TString(output_name)+"_"+TString(file_suffix), "RECREATE");
 
@@ -657,7 +668,6 @@ void slice_fit(){
 
     //draw each histo in single canvas---
     for(int i=0; i<num; ++i){
-
         adjustXAxisBinWidth(hists[i], 1000.0);
 
         if(distances[i] <= 70){//hist has 100 bins
@@ -672,14 +682,14 @@ void slice_fit(){
 
         tmpResults = CLG2(hists[i], outputFile, borderL, borderR);
         mpvConv[i] = tmpResults.mpvC * 1000.0;
+        sigConv[i] = tmpResults.sigC * 1000.0;
 
 //        hists[i]->Write();
-
-
     }
     
     //Draw mpvConv on TH2F---
-    DrawScatterWithLine(inputTH2F, distances, mpvConv, num, outputFile);
+    DrawScatterWithLine(inputTH2F, distances, mpvConv, sigConv, num, outputFile);
+    DrawScatterWithLine(inputTH2F, distances, mpvConv, sigConv, num, outputFile);
 
     //Create a subdirectory within the output file
     TDirectory* histDirectory = outputFile->mkdir("Initial_Hist");
@@ -692,6 +702,18 @@ void slice_fit(){
     outputFile->Close();
     inputFile->Close();
 
+
+
+    //Store fitting files---------
+    if (!outputTxt.is_open()) {
+        std::cerr << "Error: Cannot open output file for writing" << std::endl;
+        return;
+    }
+    //Write distances, mpvConv and sigConv
+    for (int i = 0; i < num; ++i) {
+        outputTxt << distances[i] << "\t" << mpvConv[i] << "\t" << sigConv[i] << std::endl;
+    }
+    outputTxt.close();
 
 }
 //----------------------------------------------------------
