@@ -5,6 +5,7 @@
 #include <TH1F.h>
 #include <TCanvas.h>
 #include <TLegend.h>
+#include <TAxis.h>
 
 
 void readFile(const std::string& fileName, double distances[], double mpvConv[], double sigConv[], int maxArraySize) {
@@ -27,6 +28,10 @@ void readFile(const std::string& fileName, double distances[], double mpvConv[],
         mpvConv[index] = mpv;
         sigConv[index] = sig;
         index++;
+
+        if(distance > 150){
+            break;
+        }
     }
 
     //Close the input file
@@ -39,23 +44,23 @@ void readFile(const std::string& fileName, double distances[], double mpvConv[],
 
 
 //======MAIN FUNCTION=======================================
-void rsl_compare(){
+void rsl_compare_m1(){
 
-    const int num = 60; //num of slices---
+    const int num = 30; //num of slices---
 
-    std::string inputFile99 = "../results/fit_Develop/rsl99_fit.txt";
+    std::string inputFile99 = "../results/fit_Develop/membrane1/rsl99_fit.txt";
     double dis99[num];
     double mpv99[num];
     double sig99[num];
     readFile(inputFile99, dis99, mpv99, sig99, num);
 
-    std::string inputFile70 = "../results/fit_Develop/rsl70_fit.txt";
+    std::string inputFile70 = "../results/fit_Develop/membrane1/rsl70_fit.txt";
     double dis70[num];
     double mpv70[num];
     double sig70[num];
     readFile(inputFile70, dis70, mpv70, sig70, num);
 
-    std::string inputFile50 = "../results/fit_Develop/rsl50_fit.txt";
+    std::string inputFile50 = "../results/fit_Develop/membrane1/rsl50_fit.txt";
     double dis50[num];
     double mpv50[num];
     double sig50[num];
@@ -78,6 +83,7 @@ void rsl_compare(){
     scatterGraph->GetYaxis()->SetTitle("#photon / event");
     scatterGraph->GetXaxis()->SetRangeUser(0, 300);
     scatterGraph->GetYaxis()->SetRangeUser(0, 200000);
+    canvas.Update();
 //    TGraph* lineGraph = new TGraph(num, dis99, mpv99);
 //    lineGraph->SetLineColor(kRed);
 //    lineGraph->SetLineWidth(1);
@@ -104,7 +110,7 @@ void rsl_compare(){
 
 
     //Create root file---------------
-    TFile* outputFile = new TFile("../results/fit_Develop/fitResults_compare.root", "RECREATE");
+    TFile* outputFile = new TFile("../results/fit_Develop/membrane1/fitResults_compare.root", "RECREATE");
     if (!outputFile || outputFile->IsZombie()) {
         std::cerr << "Error: Cannot open ROOT file for writing" << std::endl;
         return;
