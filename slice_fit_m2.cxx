@@ -266,6 +266,168 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
 
+//==========================================================
+//Convoluted Landau + Gaussian fitting---
+//Set mean of Gaussian as zero---
+FitResults CLG2(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRangeMax) {
+    //Create a RooRealVar for the variable you are fitting
+    RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
+
+    //Create a RooDataHist from the TH1F
+    RooDataHist data("data", "Data Histogram", x, RooFit::Import(*hist));
+
+    //Create RooRealVar for Landau parameters
+    RooRealVar mpv("mpv", "Most Probable Value", 100, 1, 1200);
+    RooRealVar sigma("sigma", "Sigma", 50, 1, 800);
+    //Create RooLandau PDF
+    RooLandau landau("landau", "Landau PDF", x, mpv, sigma);
+
+    //Create RooRealVar for Gaussian parameters
+    RooRealVar mean("mean", "Mean", 0.0, 0.0, 0.0);
+    RooRealVar width("width", "Width", 50, 1, 800);
+    RooGaussian gaussian("gaussian", "Gaussian PDF", x, mean, width);
+
+    //Create RooFFTConvPdf for the convoluted function
+    RooFFTConvPdf convoluted("convoluted", "Convoluted Landau + Gaussian", x, landau, gaussian);
+
+
+    //Create a RooCmdArg for the fit range
+    RooCmdArg fitRangeArg = RooFit::Range(fitRangeMin, fitRangeMax);
+
+    //Perform the fit, the default is maximum likelihood method--
+    RooFitResult* fitResult = convoluted.fitTo(data, RooFit::Save(true), fitRangeArg );
+//    RooFitResult* fitResult = convoluted.fitTo(data, RooFit::Save(true), RooFit::Minimizer("Minuit2", "Migrad"));
+
+
+    //Access fit results---
+    fitResult->Print("v");
+
+
+    //To find the position of the peak of convoluted curve----------
+    double xMin = fitRangeMin;
+    double xMax = fitRangeMax;
+    double xStep = 0.01;  //Adjust the step size as needed
+    double maxVal = -1.0;
+    double xPeak = -1.0; //mpv of conv function---
+    for (double xPos = xMin; xPos <= xMax; xPos += xStep) {
+        x.setVal(xPos);
+        double val = convoluted.getVal(); 
+        if (val > maxVal) {
+            maxVal = val;
+            xPeak = xPos;
+        }
+    }
+
+    //To find FHWM------
+    double halfL = 0.0;
+    double halfR = 0.0;
+    double fwhm = 0.0;
+    for (double xPos = xMin; xPos <= xPeak; xPos += xStep) {
+        x.setVal(xPos);
+        double val = convoluted.getVal(); 
+        if (val > 0.5*maxVal) {
+            halfL = xPos;
+            break;
+        }
+    }
+    for (double xPos = xPeak; xPos <= xMax; xPos += xStep) {
+        x.setVal(xPos);
+        double val = convoluted.getVal(); 
+        if (val < 0.5*maxVal) {
+            halfR = xPos;
+            break;
+        }
+    }
+    fwhm = halfR - halfL;
+
+    double sigConv = 0.0;
+    sigConv = fwhm / 2.355;
+    std::cout<<"\n\nPeak of conv: "<<xPeak<<";   FWHM: "<<fwhm<<";   sigConv: "<<sigConv<<"\n\n"<<std::endl;
+
+    //store fitting results---
+    FitResults results;
+
+
+    //clone the original histogram---
+    TH1F* histClone = (TH1F*)hist->Clone("histClone");
+
+    //Plot the result within the specified range
+    RooPlot* frame = x.frame(RooFit::Range(fitRangeMin, fitRangeMax));
+    data.plotOn(frame, RooFit::DataError(RooAbsData::SumW2));
+    convoluted.plotOn(frame, RooFit::Range(fitRangeMin, fitRangeMax));
+
+
+
+    //evaluate fitting, chi square method--
+    double chi2 = frame->chiSquare();//chi-squared value
+    int ndf = convoluted.getParameters(data)->selectByAttrib("Constant", kFALSE)->getSize(); // number of degrees of freedom
+
+
+    //Create a canvas and draw the frame
+    TCanvas canvas("canvas", "Convoluted Landau + Gaussian Fit");
+    histClone->Draw();
+    frame->Draw("SAME");//Draw fitting function---
+
+
+
+    //legend---------
+    TLegend legend(0.5, 0.45, 0.9, 0.9);
+    legend.SetTextSize(0.03);
+    legend.AddEntry(histClone, "Original Histogram", "l");
+    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaussian", "l");
+    //Add fitting parameters to the legend
+    RooLinkedListIter iter = convoluted.getParameters(data)->iterator();
+    RooRealVar* var;
+    while ((var = dynamic_cast<RooRealVar*>(iter.Next()))) {
+        legend.AddEntry((TObject*)0, Form("%s = %.2f", var->GetName(), var->getVal()), "");
+
+        //store fitting results to struct---------
+        const char* varName = var->GetName();
+        double varValue = var->getVal();
+        if (strcmp(varName, "mean") == 0) {
+                results.meanG = varValue;
+        } 
+        else if (strcmp(varName, "width") == 0) {
+                results.widthG = varValue;
+        } 
+        else if (strcmp(varName, "mpv") == 0) {
+                results.mpvL = varValue;
+        } 
+        else if (strcmp(varName, "sigma") == 0) {
+                results.sigmaL = varValue;
+        }
+
+
+    }
+
+    //Add the MPV of the convoluted function
+    legend.AddEntry((TObject*)0, Form("MPV of Conv = %.2f", xPeak), "");
+    //Add the MPV of the convoluted function
+    legend.AddEntry((TObject*)0, Form("#sigma of Conv = %.2f", sigConv), "");
+
+    //Add chi-squared information to the legend
+//    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
+
+
+    results.mpvC = xPeak; 
+    results.sigC = sigConv;
+    legend.Draw("SAME");
+
+    canvas.Write();//Save canvas into the ROOT file---
+//    frame->Write();//save fitting function---
+
+    return results;
+
+}
+//----------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 //==========================================================
@@ -476,12 +638,12 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fit_m2(){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = "rsl50_2000num_e67_crtCut.root";
+    string file_suffix = "rsl99_2000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/membrane2/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/membrane2/rsl50_fit.txt");
+    std::ofstream outputTxt("../results/fit_Develop/membrane2/rsl99_fit.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---

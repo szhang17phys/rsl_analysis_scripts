@@ -476,12 +476,12 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fit_p2(){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = "rsl50_2000num_e67_crtCut.root";
+    string file_suffix = "rsl150_2000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/pmt2/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/pmt2/rsl50_fit.txt");
+    std::ofstream outputTxt("../results/fit_Develop/pmt2/rsl150_fit.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---

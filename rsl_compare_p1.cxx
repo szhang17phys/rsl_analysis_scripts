@@ -62,6 +62,13 @@ void rsl_compare_p1(){
     double sig50[num];
     readFile(inputFile50, dis50, mpv50, sig50, num);
 
+    std::string inputFile150 = "../results/fit_Develop/pmt1/rsl150_fit.txt";
+    double dis150[num];
+    double mpv150[num];
+    double sig150[num];
+    readFile(inputFile150, dis150, mpv150, sig150, num);
+
+
     //Create root file---------------
     TFile* outputFile = new TFile("../results/fit_Develop/pmt1/fitResults_compare.root", "RECREATE");
     if (!outputFile || outputFile->IsZombie()) {
@@ -92,7 +99,7 @@ void rsl_compare_p1(){
 //    lineGraph->SetLineColor(kRed);
 //    lineGraph->SetLineWidth(1);
 //    lineGraph->Draw("L");
-    legend->AddEntry(scatterGraph, "RSL = 99.9cm", "pe");
+
 
     //RSL70
     TGraph* scatterGraph70 = new TGraph(num, dis70, mpv70);
@@ -101,7 +108,7 @@ void rsl_compare_p1(){
     scatterGraph70->SetMarkerSize(0.6);
     scatterGraph70->SetMarkerColor(kBlue);
     scatterGraph70->Draw("P SAME");
-    legend->AddEntry(scatterGraph70, "RSL = 70.0cm", "p");
+
 
     //RSL50
     TGraph* scatterGraph50 = new TGraph(num, dis50, mpv50);
@@ -110,9 +117,21 @@ void rsl_compare_p1(){
     scatterGraph50->SetMarkerSize(0.6);
     scatterGraph50->SetMarkerColor(kGreen);
     scatterGraph50->Draw("P SAME");
+
+
+    //RSL150
+    TGraph* scatterGraph150 = new TGraph(num, dis150, mpv150);
+    scatterGraph150->SetLineColor(kOrange);
+    scatterGraph150->SetMarkerStyle(21);//20: filled square
+    scatterGraph150->SetMarkerSize(0.6);
+    scatterGraph150->SetMarkerColor(kOrange);
+    scatterGraph150->Draw("P SAME");
+
+    
+    legend->AddEntry(scatterGraph150, "RSL = 150.0cm", "p");
+    legend->AddEntry(scatterGraph, "RSL = 99.9cm", "pe");
+    legend->AddEntry(scatterGraph70, "RSL = 70.0cm", "p");
     legend->AddEntry(scatterGraph50, "RSL = 50.0cm", "p");
-
-
 
 
     legend->Draw();

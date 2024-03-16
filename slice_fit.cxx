@@ -116,7 +116,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
     double sigConv = 0.0;
     sigConv = fwhm / 2.355;
-    std::cout<<"\n\nPeak of conv: "<<xPeak<<";   FWHM: "<<fwhm<<";   sigConv: "<<sigConv<<"\n\n"<<std::endl;
+    std::cout<<"\n\nPeak of convvv: "<<xPeak<<";   Value: "<<maxVal<<std::endl;
 
 
 
@@ -151,10 +151,10 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
     //legend---------
-    TLegend legend(0.6, 0.6, 0.9, 0.9);
-    legend.SetTextSize(0.06);
+    TLegend legend(0.5, 0.45, 0.9, 0.9);
+    legend.SetTextSize(0.03);
     legend.AddEntry(histClone, "Original Histogram", "l");
-    legend.AddEntry(frame->getObject(0), "Convoluted Landau + Gaussian Fit", "l");
+    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaussian", "l");
     //Add fitting parameters to the legend
     RooLinkedListIter iter = convoluted.getParameters(data)->iterator();
     RooRealVar* var;
@@ -187,9 +187,15 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
 
-    std::cout<<"\n\nMPV of convvv is: "<<xPeak<<std::endl;
+
+
+    
+
 
     //Calculate chi2 and ndf manually----------------------------------
+    std::cout<<"\n\nMPV of convvv is: "<<xPeak<<std::endl;
+
+
     double chi2 = 0.0;
     int ndf = 0;
 
@@ -203,8 +209,8 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
         RooArgSet argSet(x);// Create a RooArgSet for the variable 'x'
         x.setVal(xBinCenter);
     
-//        double expected = convoluted.getValV(&argSet);
-        double expected = convoluted.getValV();
+        double expected = convoluted.getValV(&argSet);
+//        double expected = convoluted.getVal();
 
         if (expected > 0.0) {
             double error = sqrt(histClone->GetBinContent(bin));
@@ -359,7 +365,7 @@ FitResults CLG2(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
     TLegend legend(0.5, 0.45, 0.9, 0.9);
     legend.SetTextSize(0.03);
     legend.AddEntry(histClone, "Original Histogram", "l");
-    legend.AddEntry(frame->getObject(0), "Convoluted Landau + Gaussian Fit", "l");
+    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaussian", "l");
     //Add fitting parameters to the legend
     RooLinkedListIter iter = convoluted.getParameters(data)->iterator();
     RooRealVar* var;
@@ -623,12 +629,12 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fit(){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = "rsl50_2000num_e67_crtCut.root";
-    string output_path = "../results/fit_Develop/";
+    string file_suffix = "rsl150_2000num_e67_crtCut.root";
+    string output_path = "../results/fit_Develop/cathode/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/rsl50_fit.txt");
+    std::ofstream outputTxt("../results/fit_Develop/cathode/rsl150_fit.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
