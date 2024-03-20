@@ -154,7 +154,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
     TLegend legend(0.5, 0.45, 0.9, 0.9);
     legend.SetTextSize(0.03);
     legend.AddEntry(histClone, "Original Histogram", "l");
-    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaussian", "l");
+    legend.AddEntry(frame->getObject(0), "Conv Landau + Gauss", "l");
     //Add fitting parameters to the legend
     RooLinkedListIter iter = convoluted.getParameters(data)->iterator();
     RooRealVar* var;
@@ -182,7 +182,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
     //Add the MPV of the convoluted function
     legend.AddEntry((TObject*)0, Form("MPV of Conv = %.2f", xPeak), "");
-
+    legend.AddEntry((TObject*)0, Form("#sigma of Conv = %.2f", sigConv), "");
 
 
 
@@ -235,7 +235,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
     //Add chi-squared information to the legend
-    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
+//    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
 
 
     results.mpvC = xPeak; 
@@ -629,12 +629,12 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fit(){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = "rsl150_2000num_e67_crtCut.root";
+    string file_suffix = "rsl99_2000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/cathode/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/cathode/rsl150_fit.txt");
+    std::ofstream outputTxt("../results/fit_Develop/cathode/rsl199_fit.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---

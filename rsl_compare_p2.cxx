@@ -48,7 +48,7 @@ void rsl_compare_p2(){
 
     const int num = 60; //num of slices---
 
-    std::string inputFile99 = "../results/fit_Develop/pmt2/rsl99_fit.txt";
+    std::string inputFile99 = "../results/fit_Develop/pmt2/rsl99_clg2_fit.txt";
     double dis99[num];
     double mpv99[num];
     double sig99[num];

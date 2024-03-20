@@ -2,12 +2,12 @@
 #include <TH2F.h>
 #include <TH1F.h>
 
-void sliceFit() {
+void analyze1() {
 
     //change file name each time-----------------------
-    string file_path = "./results/fit_Develop/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/";
     string file_suffix = "rsl99_2000num_e67_crtCut.root";
-    string output_path = "./results/fit_Develop/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/";
     string output_name = "fit";
     //-------------------------------------------------
 
