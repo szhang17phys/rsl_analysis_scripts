@@ -37,6 +37,7 @@ struct FitResults{
     double sigmaL; //width of Landau
     double mpvC; //mpv of convolution function
     double sigC; //sigma of convolution function
+    double num; //number of entries of hist    
 };
 
 
@@ -243,7 +244,8 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 
 
-
+    int entries = hist->Integral();
+    results.num = entries; 
 
     results.mpvC = xPeak; 
     results.sigC = sigConv;
@@ -656,6 +658,7 @@ void slice_fit_m2(){
     FitResults tmpResults; //used to tmporarily store fitResults---
     Double_t mpvConv[60];
     Double_t sigConv[60];
+    Int_t numHist[60];
 
 
     //Open the input root file----------------------------------------------------
@@ -731,7 +734,7 @@ void slice_fit_m2(){
 //        sigConv[i] = tmpResults.sigC * 1000.0;
         mpvConv[i] = tmpResults.mpvC * 1.0;
         sigConv[i] = tmpResults.sigC * 1.0;
-
+        numHist[i] = tmpResults.num;
 //        hists[i]->Write();
     }
     
@@ -759,7 +762,7 @@ void slice_fit_m2(){
     }
     //Write distances, mpvConv and sigConv
     for (int i = 0; i < num; ++i) {
-        outputTxt << distances[i] << "\t" << mpvConv[i] << "\t" << sigConv[i] << std::endl;
+        outputTxt << distances[i] << "\t" << mpvConv[i] << "\t" << sigConv[i] << "\t" << numHist[i] << std::endl;
     }
     outputTxt.close();
 

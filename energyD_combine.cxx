@@ -23,7 +23,7 @@ int energyD_combine(){
 //    TFile *file2 = new TFile("./results/rsl99_500num/Combine_Response.root", "READ");
 
     //Output location:------------
-    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/tmp/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop/cathode/";
     string output_name = "energyDistribution.root";
     //===================================================
 
