@@ -475,7 +475,8 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+//    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+    string file_suffix = rsl + "_1000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/cathode/";
     string output_name = "fitCLG1";
 
@@ -506,7 +507,8 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Access the TH2F from the file---
-    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedCathode8XA");
+//    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedCathode8XA");
+    TH2F* inputTH2F = (TH2F*)inputFile->Get("cathode8XA");
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -577,15 +579,15 @@ void slice_fitTMP(const std::string& rsl){
         vars.widthMin = 0.01;
         vars.widthMax = 100.0;
 
-        vars.meanIni = 0.0;
-        vars.meanMin = 0.0;
-        vars.meanMax = 0.0;
+        vars.meanIni = 10.0;
+        vars.meanMin = 1.0;
+        vars.meanMax = 200.0;
 
         vars.sigmaIni = 5.0;
         vars.sigmaMin = 0.01;
         vars.sigmaMax = 100.0;
 
-        tmpResults = CLG1(hists[i], outputFile, vars);
+        tmpResults = CLG1(hists[i], outputFile, vars);//core, fit function---
 
         mpvConv[i] = tmpResults.mpvC * 1000.0;
         sigConv[i] = tmpResults.sigC * 1000.0;
@@ -631,10 +633,10 @@ void slice_fitTMP(const std::string& rsl){
 //New Main function========================================
 void slice_fit(){
 
-    slice_fitTMP("rsl99");
-    slice_fitTMP("rsl50");
-    slice_fitTMP("rsl70");
-    slice_fitTMP("rsl150");    
+    slice_fitTMP("rsl100");
+//    slice_fitTMP("rsl99");
+//    slice_fitTMP("rsl70");
+//    slice_fitTMP("rsl150");    
 
 }
 //=========================================================
