@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include <TFile.h>
 #include <TH2F.h>
@@ -67,7 +68,7 @@ struct FitVars {
 //==========================================================
 //Convoluted Landau + Gaussian fitting---
 //For Gaussain, mean is not zero!
-FitResults CLG1(TH1F* hist, TFile* outputFile, const FitVars& vars) {
+FitResults CLG1(TH1F* hist, TFile* outputFile, const FitVars& vars, const char* canvasName) {
     //Create a RooRealVar for the variable you are fitting
     RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
 
@@ -158,7 +159,7 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, const FitVars& vars) {
 
 
     //Create a canvas and draw the frame
-    TCanvas canvas("canvas", "Convoluted Landau + Gaussian Fit");
+    TCanvas canvas(canvasName, "Convoluted Landau + Gaussian Fit");
     histClone->Draw();
     frame->Draw("SAME");//Draw fitting function---
 
@@ -475,8 +476,8 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-//    string file_suffix = rsl + "_2000num_e67_crtCut.root";
-    string file_suffix = rsl + "_1000num_e67_crtCut.root";
+    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+//    string file_suffix = rsl + "_1000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/cathode/";
     string output_name = "fitCLG1";
 
@@ -507,8 +508,8 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Access the TH2F from the file---
-//    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedCathode8XA");
-    TH2F* inputTH2F = (TH2F*)inputFile->Get("cathode8XA");
+    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedCathode8XA");
+//    TH2F* inputTH2F = (TH2F*)inputFile->Get("cathode8XA");
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -555,12 +556,32 @@ void slice_fitTMP(const std::string& rsl){
 
     //draw each histo in single canvas---
     for(int i=0; i<num; ++i){
-        adjustXAxisBinWidth(hists[i], 1000.0);
+        adjustXAxisBinWidth(hists[i], 1000.0);//now range is [0, 200] in units of 1000.
 
-        if(distances[i] <= 70){//hist has 100 bins
+        if(200 <= distances[i]){//hist has 400 bins; initial 800
             combineBins(hists[i]);
         }
-        if(distances[i] <= 40){//hist has 50 bins
+        if(150 <= distances[i] && distances[i]<200){//hist has 200 bins; initial 800
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+        if(70<=distances[i] && distances[i]<150){//hist has 100 bins
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+        if(40<=distances[i] && distances[i]<70){//hist has 50 bins
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+
+        if(distances[i] < 40){//hist has 25 bins
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
             combineBins(hists[i]);
         }
 
@@ -587,7 +608,10 @@ void slice_fitTMP(const std::string& rsl){
         vars.sigmaMin = 0.01;
         vars.sigmaMax = 100.0;
 
-        tmpResults = CLG1(hists[i], outputFile, vars);//core, fit function---
+        string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
+        const char * name = nameS.c_str();
+
+        tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
 
         mpvConv[i] = tmpResults.mpvC * 1000.0;
         sigConv[i] = tmpResults.sigC * 1000.0;
@@ -633,9 +657,12 @@ void slice_fitTMP(const std::string& rsl){
 //New Main function========================================
 void slice_fit(){
 
-    slice_fitTMP("rsl100");
 //    slice_fitTMP("rsl99");
+//    slice_fitTMP("rsl50");
 //    slice_fitTMP("rsl70");
+//    slice_fitTMP("rsl70");
+    slice_fitTMP("rsl100");
+//    slice_fitTMP("rsl130");      
 //    slice_fitTMP("rsl150");    
 
 }

@@ -6,22 +6,24 @@
 //Only change input_path, input_name 
 
 int hist_combine(){
-
     //Input & output root files===========================
+
+    string rslxx ="rsl100";
+
     //Open the first ROOT file---
-    TFile *file0 = new TFile("../results/tmp/Combine_rsl150_1000num_e67_hist.root", "READ");
+    TFile *file0 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num_e67_hist.root", "READ");
     if (!file0 || file0->IsZombie()) {
         std::cerr << "Error: Unable to open file1.root" << std::endl;
         return 1;
     }
     //Open the second root file---
-    TFile *file1 = new TFile("../results/tmp/Combine_rsl150_1000num2_e67_hist.root", "READ");
+    TFile *file1 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num2_e67_hist.root", "READ");
     //Open the third root file---
 //    TFile *file2 = new TFile("./results/rsl99_500num/Combine_Response.root", "READ");
 
     //Output location:------------
     string output_path = "../results/combine_2000results/";
-    string output_name = "rsl150_2000num_e67_crtCut.root";
+    string output_name = rslxx + "_2000num_e67_crtCut.root";
     //===================================================
 
 

@@ -42,7 +42,7 @@ void singleOpChM2(string file_suffix, string output_path, Int_t opch, string opc
 
     //(M2)For membrane XA 1, 3, 16, 22---
     //Old: 100, 0, 2000; Current: 100, 0, 50000
-    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 600, 100, 0, 2000);
+    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 600, 800, 0, 2000);
 
     //(C1)For Cathode XA 4, 5, 6, 7, 8, 9, 10, 11---
     //Old: 100, 0, 200000; Current: 100, 0, 5000000

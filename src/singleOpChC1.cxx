@@ -33,7 +33,7 @@ void singleOpChC1(string file_suffix, string output_path, Int_t opch, string opc
 
     //(C1)For Cathode XA 4, 5, 6, 7, 8, 9, 10, 11---
     //Old: 100, 0, 200000; Current: 100, 0, 5000000
-    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 300, 100, 0, 200000);
+    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 300, 800, 0, 200000);
 
     //(P1)For PMTs 31, 33---
     //Old: 100, 0, 20000; Current: 100, 0, 500000
