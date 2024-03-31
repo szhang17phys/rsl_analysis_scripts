@@ -22,11 +22,7 @@
 
 #include "TMinuit.h"
 
-
-//Pay attention:
-//Here is membrane 2 responses (change fitting initialization)---
-
-
+//#include <gsl/gsl_integration.h>
 
 
 //Used to store fitting variables----------
@@ -40,12 +36,30 @@ struct FitResults{
     double num; //number of entries of hist
 };
 
+//used to store fitting arguments----------
+struct FitVars {
+    double fitRangeMin;
+    double fitRangeMax;
+    double mpvIni;
+    double mpvMin;
+    double mpvMax;
+    double sigmaIni;
+    double sigmaMin;
+    double sigmaMax;
+    double meanIni;
+    double meanMin;
+    double meanMax;
+    double widthIni;
+    double widthMin;
+    double widthMax;
+};
+
 
 
 //==========================================================
 //Convoluted Landau + Gaussian fitting---
 //For Gaussain, mean is not zero!
-FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRangeMax) {
+FitResults CLG1(TH1F* hist, TFile* outputFile, const FitVars& vars) {
     //Create a RooRealVar for the variable you are fitting
     RooRealVar x("x", "Variable", hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
 
@@ -53,22 +67,21 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
     RooDataHist data("data", "Data Histogram", x, RooFit::Import(*hist));
 
     //Create RooRealVar for Landau parameters
-    RooRealVar mpv("mpv", "Most Probable Value", 100, 1, 1000);
-    RooRealVar width("width", "Width", 50, 0.01, 800);
+    RooRealVar mpv("mpv", "Most Probable Value", vars.mpvIni, vars.mpvMin, vars.mpvMax);
+    RooRealVar width("width", "Width", vars.widthIni, vars.widthMin, vars.widthMax);
     //Create RooLandau PDF
     RooLandau landau("landau", "Landau PDF", x, mpv, width);
 
     //Create RooRealVar for Gaussian parameters
-    RooRealVar mean("mean", "Mean", 100, 1, 1000);
-    RooRealVar sigma("sigma", "Sigma", 50, 0.01, 800);
+    RooRealVar mean("mean", "Mean", vars.meanIni, vars.meanMin, vars.meanMax);
+    RooRealVar sigma("sigma", "Sigma", vars.sigmaIni, vars.sigmaMin, vars.sigmaMax);
     RooGaussian gaussian("gaussian", "Gaussian PDF", x, mean, sigma);
 
     //Create RooFFTConvPdf for the convoluted function
     RooFFTConvPdf convoluted("convoluted", "Convoluted Landau + Gaussian", x, landau, gaussian);
 
-
     //Create a RooCmdArg for the fit range
-    RooCmdArg fitRangeArg = RooFit::Range(fitRangeMin, fitRangeMax);
+    RooCmdArg fitRangeArg = RooFit::Range(vars.fitRangeMin, vars.fitRangeMax);
 
     //Perform the fit, the default is maximum likelihood method--
     RooFitResult* fitResult = convoluted.fitTo(data, RooFit::Save(true), fitRangeArg );
@@ -79,11 +92,11 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
     fitResult->Print("v");
 
     //To find the position of the peak of convoluted curve----------
-    double xMin = fitRangeMin;
-    double xMax = fitRangeMax;
-    double xStep = 0.1;  //Adjust the step size as needed
+    double xMin = vars.fitRangeMin;
+    double xMax = vars.fitRangeMax;
+    double xStep = 0.001;  //, minimum of sigMPV is 5.7---
     double maxVal = -1.0;
-    double xPeak = -1.0; //mpv of conv function---
+    double xPeak = -1.0; //mpv position of conv function---
     for (double xPos = xMin; xPos <= xMax; xPos += xStep) {
         x.setVal(xPos);
         double val = convoluted.getVal(); 
@@ -117,45 +130,36 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
     double sigConv = 0.0;
     sigConv = fwhm / 2.355;
-    std::cout<<"\n\nPeak of conv: "<<xPeak<<";   FWHM: "<<fwhm<<";   sigConv: "<<sigConv<<"\n\n"<<std::endl;
-
-
-
+    std::cout<<"\n\nPeak of convvv: "<<xPeak<<";   Value: "<<maxVal<<std::endl;
 
     //store fitting results---
     FitResults results;
-
-    //--------------------------------------------------------------
 
     //clone the original histogram---
     TH1F* histClone = (TH1F*)hist->Clone("histClone");
 
     //Plot the result within the specified range
-    RooPlot* frame = x.frame(RooFit::Range(fitRangeMin, fitRangeMax));
+    RooPlot* frame = x.frame(RooFit::Range(vars.fitRangeMin, vars.fitRangeMax));
     data.plotOn(frame, RooFit::DataError(RooAbsData::SumW2));
-    convoluted.plotOn(frame, RooFit::Range(fitRangeMin, fitRangeMax));
+    convoluted.plotOn(frame, RooFit::Range(vars.fitRangeMin, vars.fitRangeMax));
 
 
-/*
-    //evaluate fitting, chi square method--
-    double chi2 = frame->chiSquare();//chi-squared value
-    int ndf = convoluted.getParameters(data)->selectByAttrib("Constant", kFALSE)->getSize(); // number of degrees of freedom
-*/
-
+//    //evaluate fitting, chi square method--
+//    double chi2 = frame->chiSquare();//chi-squared value
+//    int ndf = convoluted.getParameters(data)->selectByAttrib("Constant", kFALSE)->getSize(); // number of degrees of freedom
 
 
     //Create a canvas and draw the frame
-    TCanvas canvas("canvas", "Conv Landau + Gaussian");
+    TCanvas canvas("canvas", "Convoluted Landau + Gaussian Fit");
     histClone->Draw();
     frame->Draw("SAME");//Draw fitting function---
-
 
 
     //legend---------
     TLegend legend(0.5, 0.45, 0.9, 0.9);
     legend.SetTextSize(0.03);
     legend.AddEntry(histClone, "Original Histogram", "l");
-    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaussian", "l");
+    legend.AddEntry(frame->getObject(0), "Conv Landau + Gaus", "l");
     //Add fitting parameters to the legend
     RooLinkedListIter iter = convoluted.getParameters(data)->iterator();
     RooRealVar* var;
@@ -177,32 +181,21 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
         else if (strcmp(varName, "sigma") == 0) {
                 results.sigmaG = varValue;
         }
-
-
     }
 
     //Add the MPV of the convoluted function
-    legend.AddEntry((TObject*)0, Form("MPV of Conv = %.2f", xPeak), "");
-    //Add the MPV of the convoluted function
-    legend.AddEntry((TObject*)0, Form("#sigma of Conv = %.2f", sigConv), "");
+    legend.AddEntry((TObject*)0, Form("MPV of Conv = %.3f", xPeak), "");
+    legend.AddEntry((TObject*)0, Form("#sigma of Conv = %.3f", sigConv), "");
 
 
 
-
-
-
-
-
-
-    std::cout<<"\n\nMPV of convvv is: "<<xPeak<<std::endl;
-
-    //Calculate chi2 and ndf manually----------------------------------
+    //Calculate chi2 and ndf manually-----------
     double chi2 = 0.0;
     int ndf = 0;
 
     for (int bin = 1; bin <= histClone->GetNbinsX(); ++bin) {
         double xBinCenter = histClone->GetXaxis()->GetBinCenter(bin);
-        if (xBinCenter < fitRangeMin || xBinCenter > fitRangeMax) {
+        if (xBinCenter < vars.fitRangeMin || xBinCenter > vars.fitRangeMax) {
             continue;  // Skip points outside the fitting range
         }
 
@@ -210,8 +203,8 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
         RooArgSet argSet(x);// Create a RooArgSet for the variable 'x'
         x.setVal(xBinCenter);
     
-//        double expected = convoluted.getValV(&argSet);
-        double expected = convoluted.getValV();
+        double expected = convoluted.getValV(&argSet);
+//        double expected = convoluted.getVal();
 
         if (expected > 0.0) {
             double error = sqrt(histClone->GetBinContent(bin));
@@ -233,15 +226,12 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
     //Minus the number of fitting parameters and add 2 empty bins--
     ndf = ndf - numFloatingParams + 2;
 
-
-
     //Add chi-squared information to the legend
 //    legend.AddEntry((TObject*)0, Form("#chi^{2} / ndf = %.2f / %d", chi2, ndf), "");
 
-
-
-
-
+    std::cout<<"\n\n\nchi^2 / ndf = "<<chi2<<" / "<<ndf<<std::endl;
+    std::cout<<"mpv of convvv: "<<xPeak<<"\n\n\n"<<endl;
+    //---------------------------------
 
 
     int entries = hist->Integral();
@@ -258,9 +248,6 @@ FitResults CLG1(TH1F* hist, TFile* outputFile, double fitRangeMin, double fitRan
 
 }
 //----------------------------------------------------------
-
-
-
 
 
 
@@ -435,9 +422,9 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 
 
     // Create a TGraph for linear connections
-//    TGraph* lineGraph = new TGraph(nPoints, distances, mpvConv);
-//    lineGraph->SetLineColor(kRed);  // Set line color to blue
-//    lineGraph->SetLineWidth(1);      // Set line width
+    TGraph* lineGraph = new TGraph(nPoints, distances, mpvConv);
+    lineGraph->SetLineColor(kRed);  // Set line color to blue
+    lineGraph->SetLineWidth(1);      // Set line width
 
     // Create a canvas
     TCanvas canvas("mpvOnTh2F", "Fitting results with MPV values", 800, 600);
@@ -459,7 +446,7 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 
     // Clean up memory
     delete scatterGraph;
-//    delete lineGraph;
+    delete lineGraph;
 }
 //----------------------------------------------------------
 
@@ -474,16 +461,16 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 
 
 //==========================================================
-//Main function!---
-void slice_fit_p2(){
+void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = "rsl99_2000num_e67_crtCut.root";
+    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+//    string file_suffix = rsl + "_1000num_e67_crtCut.root";//only For RSL100---   
     string output_path = "../results/fit_Develop/pmt2/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/pmt2/rsl99_clg1_fit.txt");
+    std::ofstream outputTxt("../results/fit_Develop/pmt2/"+rsl+"_fitCLG1.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
@@ -491,12 +478,13 @@ void slice_fit_p2(){
     for (int i=0; i<60; ++i){
         distances[i] = 10*i + 5;
     }
-    //--------------------------------------------------
+    //----------------------------------------------------
 
     FitResults tmpResults; //used to tmporarily store fitResults---
     Double_t mpvConv[60];
     Double_t sigConv[60];
     Int_t numHist[60];
+
 
     //Open the input root file----------------------------------------------------
     TFile* inputFile = new TFile(TString(file_path)+TString(file_suffix), "READ");
@@ -509,6 +497,7 @@ void slice_fit_p2(){
 
     //Access the TH2F from the file---
     TH2F* inputTH2F = (TH2F*)inputFile->Get("summedPMT2");
+//    TH2F* inputTH2F = (TH2F*)inputFile->Get("pmt2");//Only for RSL100---    
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -521,7 +510,6 @@ void slice_fit_p2(){
     const int num = sizeof(distances)/sizeof(distances[0]);
     TH1F* hists[num];
 
-
     //Extract values from TH2F and create TH1F---
     for(int i=0; i<num; ++i){
         double x = distances[i];
@@ -530,7 +518,7 @@ void slice_fit_p2(){
         //Create a TH1F for each extracted data---
         hists[i] = new TH1F(Form("hist_%d", i), Form("Distance = %.1f cm", x), inputTH2F->GetNbinsY(), inputTH2F->GetYaxis()->GetXmin(), inputTH2F->GetYaxis()->GetXmax());
 
-        hists[i]->GetXaxis()->SetTitle("# #gamma");
+        hists[i]->GetXaxis()->SetTitle("# #gamma / 1000");
         hists[i]->GetYaxis()->SetTitle("Event Rate");
 
         //Fill the TH1F with data from the TH2F---
@@ -551,6 +539,8 @@ void slice_fit_p2(){
     double borderL = 0.0;
     double borderR = 0.0;
 
+    FitVars vars;
+
     //draw each histo in single canvas---
     for(int i=0; i<num; ++i){
         adjustXAxisBinWidth(hists[i], 1.0);
@@ -562,13 +552,31 @@ void slice_fit_p2(){
             combineBins(hists[i]);
         }
 */
+
         borderR = rightBorder(hists[i]);
         borderL = leftBorder(hists[i]); 
 
-        tmpResults = CLG1(hists[i], outputFile, borderL, borderR);
-//        tmpResults = CLG2(hists[i], outputFile, borderL, borderR);
-//        mpvConv[i] = tmpResults.mpvC * 1000.0;
-//        sigConv[i] = tmpResults.sigC * 1000.0;
+        vars.fitRangeMin = borderL;
+        vars.fitRangeMax = borderR;
+
+        vars.mpvIni = 100.0;
+        vars.mpvMin = 1.0;
+        vars.mpvMax = 1000.0;
+
+        vars.widthIni = 50.0;
+        vars.widthMin = 0.01;
+        vars.widthMax = 800.0;
+
+        vars.meanIni = 0.0;//fix as 0 for RSL99
+        vars.meanMin = 0.0;
+        vars.meanMax = 0.0;
+
+        vars.sigmaIni = 50.0;
+        vars.sigmaMin = 0.01;
+        vars.sigmaMax = 800.0;
+
+        tmpResults = CLG1(hists[i], outputFile, vars);
+
         mpvConv[i] = tmpResults.mpvC * 1.0;
         sigConv[i] = tmpResults.sigC * 1.0;
         numHist[i] = tmpResults.num;
@@ -605,6 +613,30 @@ void slice_fit_p2(){
 
 }
 //----------------------------------------------------------
+
+
+
+
+
+
+//Main function!============================================
+void slice_fit_p2(){
+
+//    slice_fitTMP("rsl99");
+//    slice_fitTMP("rsl50");
+//    slice_fitTMP("rsl70");
+    slice_fitTMP("rsl150");    
+
+}
+//=========================================================
+
+
+
+
+
+
+
+
 
 
 

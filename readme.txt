@@ -24,7 +24,7 @@ Compare fitting results of different RSLs; cathode
 slice_fit_m1/m2/p1/p2.cxx
 For certain slice, do fitting; cathode, (membrane XAs close)/(membrane XAs away from)/(pmts close)/(pmts away from) to track
 
-rsl_compare_m1/m2/p1/p2.cxx:
+rsl_compare_mmpp.cxx:
 Compare fitting results of different RSLs; (membrane XAs close)/(membrane XAs away from)/(pmts close)/(pmts away from) close to track
 
 

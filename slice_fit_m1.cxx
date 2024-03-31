@@ -467,7 +467,8 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
     string file_path = "../results/combine_2000results/";
-    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+//    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+    string file_suffix = rsl + "_1000num_e67_crtCut.root";//only For RSL100---    
     string output_path = "../results/fit_Develop/membrane1/";
     string output_name = "fitCLG1";
 
@@ -498,7 +499,8 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Access the TH2F from the file---
-    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM1");
+//    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM1");
+    TH2F* inputTH2F = (TH2F*)inputFile->Get("membrane1");//Only for RSL100---    
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -625,10 +627,10 @@ void slice_fitTMP(const std::string& rsl){
 //Main function!============================================
 void slice_fit_m1(){
 
-    slice_fitTMP("rsl99");
-    slice_fitTMP("rsl50");
-    slice_fitTMP("rsl70");
-    slice_fitTMP("rsl150");    
+    slice_fitTMP("rsl100");
+//    slice_fitTMP("rsl50");
+//    slice_fitTMP("rsl70");
+//    slice_fitTMP("rsl150");    
 
 }
 //=========================================================

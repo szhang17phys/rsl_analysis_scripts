@@ -47,12 +47,18 @@ double sigBias(double A, double sigA, double B, double sigB){
 
 
 
-//======MAIN FUNCTION=======================================
-void rsl_compare(){
+//======TMP FUNCTION=======================================
+void rsl_compareTMP(const std::string& path){
 
     const int num = 60; //num of slices---
 
-    std::string inputFile99 = "../results/fit_Develop/cathode/rsl99_fitCLG1.txt";
+    std::string inputFile99 = path + "/rsl99_fitCLG1.txt";
+    std::string inputFile50 = path + "/rsl50_fitCLG1.txt";
+    std::string inputFile70 = path + "/rsl70_fitCLG1.txt";
+    std::string inputFile100 = path + "/rsl100_fitCLG1.txt";
+    std::string inputFile150 = path + "/rsl150_fitCLG1.txt";
+
+
     double dis99[num];
     double mpv99[num];
     double sig99[num];
@@ -67,7 +73,6 @@ void rsl_compare(){
     }
 
 
-    std::string inputFile50 = "../results/fit_Develop/cathode/rsl50_fitCLG1.txt";
     double dis50[num];
     double mpv50[num];
     double sig50[num];
@@ -82,7 +87,6 @@ void rsl_compare(){
     }
 
 
-    std::string inputFile70 = "../results/fit_Develop/cathode/rsl70_fitCLG1.txt";
     double dis70[num];
     double mpv70[num];
     double sig70[num];
@@ -97,7 +101,6 @@ void rsl_compare(){
     }
 
 
-    std::string inputFile100 = "../results/fit_Develop/cathode/rsl100_fitCLG1.txt";
     double dis100[num];
     double mpv100[num];
     double sig100[num];
@@ -112,7 +115,6 @@ void rsl_compare(){
     }
 
 
-    std::string inputFile150 = "../results/fit_Develop/cathode/rsl150_fitCLG1.txt";
     double dis150[num];
     double mpv150[num];
     double sig150[num];
@@ -214,16 +216,12 @@ void rsl_compare(){
 
 
 
-
-
 //Create root file--------------------------------------------------------
-    TFile* outputFile = new TFile("../results/fit_Develop/cathode/fitCLG1_compare.root", "RECREATE");
+    TFile* outputFile = new TFile(TString(path)+"/fitCLG1_compare.root", "RECREATE");
     if (!outputFile || outputFile->IsZombie()) {
         std::cerr << "Error: Cannot open ROOT file for writing" << std::endl;
         return;
     }
-
-
 
 
 
@@ -394,4 +392,10 @@ void rsl_compare(){
 }
 
     
+//==========Main Function===============================================
+void rsl_compare(){
 
+    rsl_compareTMP("../results/fit_Develop/cathode");
+        
+
+}
