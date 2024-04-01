@@ -38,6 +38,7 @@ struct FitResults{
     double num; //number of entries of hist
 };
 
+
 //used to store fitting arguments----------
 struct FitVars {
     double fitRangeMin;
@@ -54,8 +55,44 @@ struct FitVars {
     double widthIni;
     double widthMin;
     double widthMax;
-};
 
+    //Initialization---
+    FitVars() {
+        fitRangeMin = 0.0;
+        fitRangeMax = 0.0;
+        mpvIni = 0.0;
+        mpvMin = 0.0;
+        mpvMax = 0.0;
+        sigmaIni = 0.0;
+        sigmaMin = 0.0;
+        sigmaMax = 0.0;
+        meanIni = 0.0;
+        meanMin = 0.0;
+        meanMax = 0.0;
+        widthIni = 0.0;
+        widthMin = 0.0;
+        widthMax = 0.0;
+    }
+
+    //copy constructor---
+    FitVars(const FitVars& other){
+        fitRangeMin = other.fitRangeMin;
+        fitRangeMax = other.fitRangeMax;
+        mpvIni = other.mpvIni;
+        mpvMin = other.mpvMin;
+        mpvMax = other.mpvMax;
+        sigmaIni = other.sigmaIni;
+        sigmaMin = other.sigmaMin;
+        sigmaMax = other.sigmaMax;
+        meanIni = other.meanIni;
+        meanMin = other.meanMin;
+        meanMax = other.meanMax;
+        widthIni = other.widthIni;
+        widthMin = other.widthMin;
+        widthMax = other.widthMax;
+
+    }
+};
 
 
 
@@ -475,8 +512,8 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 //OLD Main function!---
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
-    string file_path = "../results/combine_2000results/";
-    string file_suffix = rsl + "_2000num_e67_crtCut.root";
+    string file_path = "../results/combine_3000results/";
+    string file_suffix = rsl + "_3000num_e67_crtCut.root";
 //    string file_suffix = rsl + "_1000num_e67_crtCut.root";
     string output_path = "../results/fit_Develop/cathode/";
     string output_name = "fitCLG1";
@@ -611,7 +648,47 @@ void slice_fitTMP(const std::string& rsl){
         string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
         const char * name = nameS.c_str();
 
-        tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+
+        //single point correction------------------------------
+        if(rsl == "rsl99" && distances[i] == 212.5){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }   
+        else if(rsl == "rsl99" && distances[i] == 232.5){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl70" && distances[i] == 197.5){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl70" && distances[i] == 217.5){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl70" && distances[i] == 242.5){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else{
+            tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+        }
+
 
         mpvConv[i] = tmpResults.mpvC * 1000.0;
         sigConv[i] = tmpResults.sigC * 1000.0;
@@ -659,9 +736,7 @@ void slice_fit(){
 
 //    slice_fitTMP("rsl99");
 //    slice_fitTMP("rsl50");
-//    slice_fitTMP("rsl70");
-//    slice_fitTMP("rsl70");
-    slice_fitTMP("rsl100");
+    slice_fitTMP("rsl70");
 //    slice_fitTMP("rsl130");      
 //    slice_fitTMP("rsl150");    
 

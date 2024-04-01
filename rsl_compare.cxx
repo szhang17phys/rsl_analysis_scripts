@@ -55,7 +55,6 @@ void rsl_compareTMP(const std::string& path){
     std::string inputFile99 = path + "/rsl99_fitCLG1.txt";
     std::string inputFile50 = path + "/rsl50_fitCLG1.txt";
     std::string inputFile70 = path + "/rsl70_fitCLG1.txt";
-    std::string inputFile100 = path + "/rsl100_fitCLG1.txt";
     std::string inputFile130 = path + "/rsl130_fitCLG1.txt";
     std::string inputFile150 = path + "/rsl150_fitCLG1.txt";
 
@@ -99,20 +98,6 @@ void rsl_compareTMP(const std::string& path){
             sigMPV70[i] = sig70[i]/sqrt(static_cast<double>(ent70[i]));
         }
         else sigMPV70[i] = 0.0;
-    }
-
-
-    double dis100[num];
-    double mpv100[num];
-    double sig100[num];
-    int ent100[num];//entries---
-    readFile(inputFile100, dis100, mpv100, sig100, ent100, num);
-    double sigMPV100[num];//sigma of MPV---
-    for(int i=0; i<num; ++i){
-        if(ent100[i]>0){
-            sigMPV100[i] = sig100[i]/sqrt(static_cast<double>(ent100[i]));
-        }
-        else sigMPV100[i] = 0.0;
     }
 
 
@@ -202,15 +187,6 @@ void rsl_compareTMP(const std::string& path){
     scatterGraph70->SetMarkerColor(kBlue);
     scatterGraph70->Draw("P SAME");
 
-    //RSL100
-//    TGraph* scatterGraph70 = new TGraph(num, dis70, mpv70);
-    TGraphErrors* scatterGraph100 = new TGraphErrors(num, dis100, mpv100, nullptr, sigMPV100);
-    scatterGraph100->SetLineColor(kViolet);
-    scatterGraph100->SetMarkerStyle(21);//20: filled square
-    scatterGraph100->SetMarkerSize(0.6);
-    scatterGraph100->SetMarkerColor(kViolet);
-    scatterGraph100->Draw("P SAME");
-
 
     //RSL130
 //    TGraph* scatterGraph70 = new TGraph(num, dis70, mpv70);
@@ -232,7 +208,6 @@ void rsl_compareTMP(const std::string& path){
     
     legend->AddEntry(scatterGraph150, "RSL = 150.0cm", "pe");
     legend->AddEntry(scatterGraph130, "RSL = 130.0cm", "pe");
-    legend->AddEntry(scatterGraph100, "RSL = 100.0cm", "pe");
     legend->AddEntry(scatterGraph, "RSL = 99.9cm", "pe");
     legend->AddEntry(scatterGraph70, "RSL = 70.0cm", "pe");
     legend->AddEntry(scatterGraph50, "RSL = 50.0cm", "pe");
@@ -257,25 +232,21 @@ void rsl_compareTMP(const std::string& path){
 
     double diff50[num];//(mpv50 - mpv99)---
     double diff70[num];
-    double diff100[num];
     double diff130[num];
     double diff150[num];
     double sigDiff50[num];//sigma of diff50---
-    double sigDiff70[num];
-    double sigDiff100[num];    
+    double sigDiff70[num];   
     double sigDiff130[num];
     double sigDiff150[num];    
 
     for(int i=0; i<num; ++i){
         diff50[i] = mpv50[i] - mpv99[i];
         diff70[i] = mpv70[i] - mpv99[i];
-        diff100[i] = mpv100[i] - mpv99[i];
         diff130[i] = mpv130[i] - mpv99[i];
         diff150[i] = mpv150[i] - mpv99[i];
 
         sigDiff50[i] = sqrt(sigMPV50[i]*sigMPV50[i] + sigMPV99[i]*sigMPV99[i]);
         sigDiff70[i] = sqrt(sigMPV70[i]*sigMPV70[i] + sigMPV99[i]*sigMPV99[i]);
-        sigDiff100[i] = sqrt(sigMPV100[i]*sigMPV100[i] + sigMPV99[i]*sigMPV99[i]);
         sigDiff130[i] = sqrt(sigMPV130[i]*sigMPV130[i] + sigMPV99[i]*sigMPV99[i]);        
         sigDiff150[i] = sqrt(sigMPV150[i]*sigMPV150[i] + sigMPV99[i]*sigMPV99[i]);  
 
@@ -301,14 +272,6 @@ void rsl_compareTMP(const std::string& path){
     graphDiff70->SetMarkerColor(kBlue);
     graphDiff70->Draw("P SAME");
 
-    //diff100
-    TGraphErrors* graphDiff100 = new TGraphErrors(num, dis100, diff100, nullptr, sigDiff100);
-    graphDiff100->SetLineColor(kViolet);
-    graphDiff100->SetMarkerStyle(20);//20: filled square
-    graphDiff100->SetMarkerSize(0.6);
-    graphDiff100->SetMarkerColor(kViolet);
-    graphDiff100->Draw("P SAME");
-
     //diff130
     TGraphErrors* graphDiff130 = new TGraphErrors(num, dis130, diff130, nullptr, sigDiff130);
     graphDiff130->SetLineColor(28);
@@ -327,7 +290,6 @@ void rsl_compareTMP(const std::string& path){
     
     legend2->AddEntry(graphDiff50, "RSL50 - RSL100", "pe");
     legend2->AddEntry(graphDiff70, "RSL70 - RSL99", "pe");
-    legend2->AddEntry(graphDiff100, "RSL100 - RSL99", "pe");
     legend2->AddEntry(graphDiff130, "RSL130 - RSL99", "pe");
     legend2->AddEntry(graphDiff150, "RSL150 - RSL100", "pe");
     legend2->Draw();
@@ -343,12 +305,10 @@ void rsl_compareTMP(const std::string& path){
 
     double bias50[num];//2*(mpv50-mpv99)/(mpv50+mpv99)---
     double bias70[num];
-    double bias100[num];
     double bias130[num];
     double bias150[num];
     double sigBias50[num];//sigma of bias50---
     double sigBias70[num];
-    double sigBias100[num];
     double sigBias130[num];
     double sigBias150[num];  
 
@@ -356,13 +316,11 @@ void rsl_compareTMP(const std::string& path){
     for(int i=0; i<num; ++i){
         bias50[i] = 2 * (mpv50[i] - mpv99[i]) / (mpv50[i] + mpv99[i]);
         bias70[i] = 2 * (mpv70[i] - mpv99[i]) / (mpv70[i] + mpv99[i]);
-        bias100[i] = 2 * (mpv100[i] - mpv99[i]) / (mpv100[i] + mpv99[i]);
         bias130[i] = 2 * (mpv130[i] - mpv99[i]) / (mpv130[i] + mpv99[i]);
         bias150[i] = 2 * (mpv150[i] - mpv99[i]) / (mpv150[i] + mpv99[i]);
 
         sigBias50[i] = sigBias(mpv50[i], sigMPV50[i], mpv99[i], sigMPV99[i]);   
         sigBias70[i] = sigBias(mpv70[i], sigMPV70[i], mpv99[i], sigMPV99[i]);
-        sigBias100[i] = sigBias(mpv100[i], sigMPV100[i], mpv99[i], sigMPV99[i]);
         sigBias130[i] = sigBias(mpv130[i], sigMPV130[i], mpv99[i], sigMPV99[i]);
         sigBias150[i] = sigBias(mpv150[i], sigMPV150[i], mpv99[i], sigMPV99[i]);
 
@@ -374,7 +332,7 @@ void rsl_compareTMP(const std::string& path){
     graphBias50->SetMarkerStyle(20);//20: filled circle
     graphBias50->SetMarkerSize(0.6);
     graphBias50->SetMarkerColor(kGreen);
-//    graphBias50->Draw("AP");
+    graphBias50->Draw("AP");
     graphBias50->GetXaxis()->SetTitle("Distance [cm]");
     graphBias50->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
     graphBias50->GetXaxis()->SetRangeUser(0, 300);
@@ -387,19 +345,6 @@ void rsl_compareTMP(const std::string& path){
     graphBias70->SetMarkerSize(0.6);
     graphBias70->SetMarkerColor(kBlue);
     graphBias70->Draw("P SAME");
-
-    graphBias70->Draw("AP");
-    graphBias70->GetXaxis()->SetTitle("Distance [cm]");
-    graphBias70->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
-    graphBias70->GetXaxis()->SetRangeUser(0, 300);
-
-    //diff100
-    TGraphErrors* graphBias100 = new TGraphErrors(num, dis100, bias100, nullptr, sigBias100);
-    graphBias100->SetLineColor(kViolet);
-    graphBias100->SetMarkerStyle(20);//20: filled square
-    graphBias100->SetMarkerSize(0.6);
-    graphBias100->SetMarkerColor(kViolet);
-    graphBias100->Draw("P SAME");
 
     //diff130
     TGraphErrors* graphBias130 = new TGraphErrors(num, dis130, bias130, nullptr, sigBias130);
@@ -419,7 +364,6 @@ void rsl_compareTMP(const std::string& path){
     
     legend3->AddEntry(graphBias50, "RSL50", "pe");
     legend3->AddEntry(graphBias70, "RSL70", "pe");
-    legend3->AddEntry(graphBias100, "RSL100", "pe");
     legend3->AddEntry(graphBias130, "RSL130", "pe");
     legend3->AddEntry(graphBias150, "RSL150", "pe");
     legend3->Draw();

@@ -8,21 +8,25 @@
 int hist_combine(){
     //Input & output root files===========================
 
-    string rslxx ="rsl100";
+    string rslxx ="rsl150";
 
     //Open the first ROOT file---
-    TFile *file0 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num_e67_hist.root", "READ");
+    TFile *file0 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num3_e67_hist.root", "READ");
     if (!file0 || file0->IsZombie()) {
         std::cerr << "Error: Unable to open file1.root" << std::endl;
         return 1;
     }
     //Open the second root file---
-    TFile *file1 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num2_e67_hist.root", "READ");
-    //Open the third root file---
-//    TFile *file2 = new TFile("./results/rsl99_500num/Combine_Response.root", "READ");
+//    TFile *file1 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num2_e67_hist.root", "READ");
+
+    TFile *file1 = new TFile("../results/combine_2000results/"+TString(rslxx)+"_2000num_e67_crtCut.root", "READ");
+
 
     //Output location:------------
-    string output_path = "../results/combine_2000results/";
+//    string output_path = "../results/combine_2000results/";
+
+    string output_path = "../results/combine_3000results/";
+
     string output_name = rslxx + "_2000num_e67_crtCut.root";
     //===================================================
 
@@ -32,24 +36,33 @@ int hist_combine(){
 
     //Get access to histos inside root files----------------------------
     TH2F *hist10 = dynamic_cast<TH2F*>(file0->Get("cathode8XA"));
-    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("cathode8XA"));    
-//    TH2F *hist12 = dynamic_cast<TH2F*>(file2->Get("cathode8XA"));
+//    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("cathode8XA"));  
+
+    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("summedCathode8XA")); 
+
 
     TH2F *hist20 = dynamic_cast<TH2F*>(file0->Get("membrane1"));
-    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("membrane1"));    
-//    TH2F *hist22 = dynamic_cast<TH2F*>(file2->Get("membrane1"));
+//    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("membrane1"));    
+
+    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("summedM1")); 
+
 
     TH2F *hist30 = dynamic_cast<TH2F*>(file0->Get("membrane2"));
-    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("membrane2"));    
-//    TH2F *hist32 = dynamic_cast<TH2F*>(file2->Get("membrane2"));
+//    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("membrane2"));    
+
+    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("summedM2"));  
+
 
     TH2F *hist40 = dynamic_cast<TH2F*>(file0->Get("pmt1"));
-    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("pmt1"));    
-//    TH2F *hist42 = dynamic_cast<TH2F*>(file2->Get("pmt1"));
+//    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("pmt1"));    
+
+    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("summedPMT1"));
+
 
     TH2F *hist50 = dynamic_cast<TH2F*>(file0->Get("pmt2"));
-    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("pmt2"));    
-//    TH2F *hist52 = dynamic_cast<TH2F*>(file2->Get("pmt2"));
+//    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("pmt2"));    
+
+    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("summedPMT2")); 
 
 
    
