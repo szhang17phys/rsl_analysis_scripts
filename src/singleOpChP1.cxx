@@ -37,7 +37,7 @@ void singleOpChP1(string file_suffix, string output_path, Int_t opch, string opc
 
     //(P1)For PMTs 31, 33---
     //Old: 100, 0, 20000; Current: 100, 0, 500000
-    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 300, 800, 0, 20000);
+    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 30, 0, 300, 800, 0, 20000);
 
     //(P2)For all left PMTs, 12~15, 18~21, 24~29, 30, 32, 34~39---
     //Old: 100, 0, 2000; Current: 100, 0, 50000
