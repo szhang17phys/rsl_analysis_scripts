@@ -338,13 +338,15 @@ void rsl_compareTMP(const std::string& path){
     graphBias50->GetXaxis()->SetRangeUser(0, 300);
 //    graphBias50->GetYaxis()->SetRangeUser(-10000, 40000);
 
+
     //diff70
     TGraphErrors* graphBias70 = new TGraphErrors(num, dis70, bias70, nullptr, sigBias70);
     graphBias70->SetLineColor(kBlue);
     graphBias70->SetMarkerStyle(20);//20: filled square
     graphBias70->SetMarkerSize(0.6);
     graphBias70->SetMarkerColor(kBlue);
-    graphBias70->Draw("P SAME");
+//    graphBias70->Draw("P SAME");
+
 
     //diff130
     TGraphErrors* graphBias130 = new TGraphErrors(num, dis130, bias130, nullptr, sigBias130);
@@ -352,7 +354,8 @@ void rsl_compareTMP(const std::string& path){
     graphBias130->SetMarkerStyle(20);//20: filled square
     graphBias130->SetMarkerSize(0.6);
     graphBias130->SetMarkerColor(28);
-    graphBias130->Draw("P SAME");
+//    graphBias130->Draw("P SAME");
+
 
     //diff150
     TGraphErrors* graphBias150 = new TGraphErrors(num, dis150, bias150, nullptr, sigBias150);
@@ -360,12 +363,14 @@ void rsl_compareTMP(const std::string& path){
     graphBias150->SetMarkerStyle(20);//20: filled square
     graphBias150->SetMarkerSize(0.6);
     graphBias150->SetMarkerColor(kOrange);
-    graphBias150->Draw("P SAME");
+//    graphBias150->Draw("P SAME");
+
+
     
     legend3->AddEntry(graphBias50, "RSL50", "pe");
-    legend3->AddEntry(graphBias70, "RSL70", "pe");
-    legend3->AddEntry(graphBias130, "RSL130", "pe");
-    legend3->AddEntry(graphBias150, "RSL150", "pe");
+//    legend3->AddEntry(graphBias70, "RSL70", "pe");
+//    legend3->AddEntry(graphBias130, "RSL130", "pe");
+//    legend3->AddEntry(graphBias150, "RSL150", "pe");
     legend3->Draw();
 
 

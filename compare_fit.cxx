@@ -36,7 +36,10 @@ void LinearFit(TGraphErrors* graph, double minX, double maxX) {
     
     //Get the fitted parameters
     double slope = fit->GetParameter(1);
+    double slopeError = fit->GetParError(1); // Uncertainty of slope parameter
     double intercept = fit->GetParameter(0);
+    double interceptError = fit->GetParError(0); // Uncertainty of intercept parameter
+
 
     //fit goodness---
     double chiSquare = fit->GetChisquare();//chi^2
@@ -44,8 +47,11 @@ void LinearFit(TGraphErrors* graph, double minX, double maxX) {
     double chiNDF = chiSquare / ndf;
 
     //Print the results
-    std::cout<< std::fixed;
-    std::cout << "k = " << std::setprecision(6) << slope << ",  b = " << std::setprecision(3) << intercept << ",    chi^2/ndf = " << chiSquare << "/" << ndf << " = " << chiNDF <<std::endl;
+    
+    std::cout << "\nk = " << std::setprecision(6) << slope << " ± " << slopeError 
+              << ", b = " << std::setprecision(3) << intercept << " ± " << interceptError 
+              << ",  chi^2/ndf = " << chiSquare << "/" << ndf << " = " << chiNDF << "\n" << std::endl;
+
 
     //Set the fitted curve color to match the scatter plot color
     fit->SetLineColor(graph->GetMarkerColor());
@@ -142,7 +148,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj;
             new_canvas->cd();
 
-            LinearFit(graph, 50.0, 200.0);
+            LinearFit(graph, 50.0, 230.0);
 //            ChebyshevFit(graph, 50.0, 200.0);
         }
     }
