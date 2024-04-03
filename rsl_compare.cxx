@@ -50,7 +50,7 @@ double sigBias(double A, double sigA, double B, double sigB){
 //======TMP FUNCTION=======================================
 void rsl_compareTMP(const std::string& path){
 
-    const int num = 60; //num of slices---
+    const int num = 30; //num of slices---
 
     std::string inputFile99 = path + "/rsl99_fitCLG1.txt";
     std::string inputFile50 = path + "/rsl50_fitCLG1.txt";
@@ -300,9 +300,6 @@ void rsl_compareTMP(const std::string& path){
 
 
 //Drawing 3-------------------------------------------------------------------
-    TCanvas canvas3("fitBias", "fit Bias", 800, 600);
-    TLegend* legend3 = new TLegend(0.6, 0.6, 0.9, 0.9);
-
     double bias50[num];//2*(mpv50-mpv99)/(mpv50+mpv99)---
     double bias70[num];
     double bias130[num];
@@ -326,7 +323,10 @@ void rsl_compareTMP(const std::string& path){
 
     }
 
-    //bias50
+    //bias50----------
+    TCanvas canvas3_rsl50("fitBias_rsl50", "fit Bias", 800, 600);
+    TLegend* legend3_rsl50 = new TLegend(0.6, 0.7, 0.9, 0.9);
+
     TGraphErrors* graphBias50 = new TGraphErrors(num, dis50, bias50, nullptr, sigBias50);
     graphBias50->SetLineColor(kGreen);
     graphBias50->SetMarkerStyle(20);//20: filled circle
@@ -336,50 +336,97 @@ void rsl_compareTMP(const std::string& path){
     graphBias50->GetXaxis()->SetTitle("Distance [cm]");
     graphBias50->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
     graphBias50->GetXaxis()->SetRangeUser(0, 300);
-//    graphBias50->GetYaxis()->SetRangeUser(-10000, 40000);
+
+    legend3_rsl50->AddEntry(graphBias50, "RSL50", "pe");
+    legend3_rsl50->Draw();
 
 
-    //diff70
+    //bias70----------
+    TCanvas canvas3_rsl70("fitBias_rsl70", "fit Bias", 800, 600);
+    TLegend* legend3_rsl70 = new TLegend(0.6, 0.7, 0.9, 0.9);
+
     TGraphErrors* graphBias70 = new TGraphErrors(num, dis70, bias70, nullptr, sigBias70);
     graphBias70->SetLineColor(kBlue);
     graphBias70->SetMarkerStyle(20);//20: filled square
     graphBias70->SetMarkerSize(0.6);
     graphBias70->SetMarkerColor(kBlue);
+    graphBias70->Draw("AP");
+    graphBias70->GetXaxis()->SetTitle("Distance [cm]");
+    graphBias70->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
+    graphBias70->GetXaxis()->SetRangeUser(0, 300);
 //    graphBias70->Draw("P SAME");
 
+    legend3_rsl70->AddEntry(graphBias70, "RSL70", "pe");
+    legend3_rsl70->Draw();
 
-    //diff130
+
+    //bias130----------
+    TCanvas canvas3_rsl130("fitBias_rsl130", "fit Bias", 800, 600);
+    TLegend* legend3_rsl130 = new TLegend(0.6, 0.7, 0.9, 0.9);
+
     TGraphErrors* graphBias130 = new TGraphErrors(num, dis130, bias130, nullptr, sigBias130);
     graphBias130->SetLineColor(28);
     graphBias130->SetMarkerStyle(20);//20: filled square
     graphBias130->SetMarkerSize(0.6);
     graphBias130->SetMarkerColor(28);
+    graphBias130->Draw("AP");
+    graphBias130->GetXaxis()->SetTitle("Distance [cm]");
+    graphBias130->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
+    graphBias130->GetXaxis()->SetRangeUser(0, 300);
 //    graphBias130->Draw("P SAME");
+
+    legend3_rsl130->AddEntry(graphBias130, "RSL130", "pe");
+    legend3_rsl130->Draw();
 
 
     //diff150
+    TCanvas canvas3_rsl150("fitBias_rsl150", "fit Bias", 800, 600);
+    TLegend* legend3_rsl150 = new TLegend(0.6, 0.7, 0.9, 0.9);
+
     TGraphErrors* graphBias150 = new TGraphErrors(num, dis150, bias150, nullptr, sigBias150);
     graphBias150->SetLineColor(kOrange);
     graphBias150->SetMarkerStyle(20);//20: filled square
     graphBias150->SetMarkerSize(0.6);
     graphBias150->SetMarkerColor(kOrange);
+    graphBias150->Draw("AP");
+    graphBias150->GetXaxis()->SetTitle("Distance [cm]");
+    graphBias150->GetYaxis()->SetTitle("2*(RSLxx - RSL100)/(RSLxx + RSL100)");
+    graphBias150->GetXaxis()->SetRangeUser(0, 300);
 //    graphBias150->Draw("P SAME");
+
+    legend3_rsl150->AddEntry(graphBias150, "RSL150", "pe");
+    legend3_rsl150->Draw();
 
 
     
-    legend3->AddEntry(graphBias50, "RSL50", "pe");
-//    legend3->AddEntry(graphBias70, "RSL70", "pe");
-//    legend3->AddEntry(graphBias130, "RSL130", "pe");
-//    legend3->AddEntry(graphBias150, "RSL150", "pe");
-    legend3->Draw();
+    //Draw all bias graphs in one canvas----------
+    TCanvas canvas3_All("fitBias_All", "fit Bias", 800, 600);
+    TLegend* legend3_All = new TLegend(0.6, 0.7, 0.9, 0.9);
+
+    graphBias50->Draw("AP");
+    graphBias70->Draw("P SAME");
+    graphBias130->Draw("P SAME");
+    graphBias150->Draw("P SAME");
+
+    legend3_All->AddEntry(graphBias50, "RSL50", "pe");
+    legend3_All->AddEntry(graphBias70, "RSL70", "pe");
+    legend3_All->AddEntry(graphBias130, "RSL130", "pe");
+    legend3_All->AddEntry(graphBias150, "RSL150", "pe");
+    legend3_All->Draw();
 
 
 
 
-
+    //-------------------------------------
     canvas.Write();
     canvas2.Write();
-    canvas3.Write();
+
+    canvas3_rsl50.Write();
+    canvas3_rsl70.Write();
+    canvas3_rsl130.Write();
+    canvas3_rsl150.Write();
+    canvas3_All.Write();
+
     outputFile->Close();
 
 
@@ -394,7 +441,7 @@ void rsl_compareTMP(const std::string& path){
 //==========Main Function===============================================
 void rsl_compare(){
 
-    rsl_compareTMP("../results/fit_Develop/cathode");
+    rsl_compareTMP("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_slice10cm/cathode");
         
 
 }

@@ -69,7 +69,7 @@ struct FitVars {
         meanIni = 0.0;
         meanMin = 0.0;
         meanMax = 0.0;
-        widthIni = 0.0;
+        widthIni = 0.0;//Landau with!!!
         widthMin = 0.0;
         widthMax = 0.0;
     }
@@ -633,8 +633,8 @@ void slice_fitTMP(const std::string& rsl){
         vars.mpvMin = 1.0;
         vars.mpvMax = 200.0;
 
-        vars.widthIni = 5.0;
-        vars.widthMin = 0.01;
+        vars.widthIni = 5.0;//Landau width---
+        vars.widthMin = 0.001;
         vars.widthMax = 100.0;
 
         vars.meanIni = 10.0;
@@ -642,7 +642,7 @@ void slice_fitTMP(const std::string& rsl){
         vars.meanMax = 200.0;
 
         vars.sigmaIni = 5.0;
-        vars.sigmaMin = 0.01;
+        vars.sigmaMin = 0.001;
         vars.sigmaMax = 100.0;
 
         string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
@@ -650,10 +650,45 @@ void slice_fitTMP(const std::string& rsl){
 
 
         //single point correction------------------------------
-        if(rsl == "rsl99" && distances[i] == 135){
+        if(rsl == "rsl99" && distances[i] == 15){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 6.0;
+            varsTMP.meanIni = 60.0;
+            varsTMP.mpvIni = 60.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl99" && distances[i] == 25){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 45.0;
+            varsTMP.mpvIni = 45.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl99" && distances[i] == 65){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            varsTMP.sigmaIni = 3.0;
+            varsTMP.sigmaMin = 3.0;
+            varsTMP.sigmaMax = 3.0;
+            varsTMP.mpvIni = 30.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl99" && distances[i] == 135){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 7.0;
+            varsTMP.mpvIni = 7.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl99" && distances[i] == 155){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 5.0;
             varsTMP.mpvIni = 6.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl99" && distances[i] == 215){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 3.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }   
         else if(rsl == "rsl99" && distances[i] == 225){
@@ -662,86 +697,163 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 3.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }  
-/*        else if(rsl == "rsl70" && distances[i] == 197.5){
+        else if(rsl == "rsl99" && distances[i] == 245){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 3.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+
+        else if(rsl == "rsl50" && distances[i] == 15){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 60.0;
+            varsTMP.mpvIni = 60.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl50" && distances[i] == 25){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 45.0;
+            varsTMP.mpvIni = 45.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl50" && distances[i] == 65){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 15.0;
+            varsTMP.mpvIni = 15.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }          
+        else if(rsl == "rsl50" && distances[i] == 215){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 3.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl50" && distances[i] == 225){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 3.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+
+        else if(rsl == "rsl70" && distances[i] == 15){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 60.0;
+            varsTMP.mpvIni = 60.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl70" && distances[i] == 25){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 45.0;
+            varsTMP.mpvIni = 45.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl70" && distances[i] == 65){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 15.0;
+            varsTMP.mpvIni = 15.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl70" && distances[i] == 135){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 7.0;
+            varsTMP.mpvIni = 7.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl70" && distances[i] == 205){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 4.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl70" && distances[i] == 225){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 3.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl70" && distances[i] == 245){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 2.0;
+            varsTMP.mpvIni = 3.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+
+        else if(rsl == "rsl130" && distances[i] == 15){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 60.0;
+            varsTMP.mpvIni = 60.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl130" && distances[i] == 25){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 45.0;
+            varsTMP.mpvIni = 45.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl130" && distances[i] == 65){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 15.0;
+            varsTMP.mpvIni = 15.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl130" && distances[i] == 215){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 4.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl130" && distances[i] == 225){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 4.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+
+        else if(rsl == "rsl150" && distances[i] == 15){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 60.0;
+            varsTMP.mpvIni = 60.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl150" && distances[i] == 25){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 45.0;
+            varsTMP.mpvIni = 45.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl150" && distances[i] == 65){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 15.0;
+            varsTMP.mpvIni = 15.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }    
+        else if(rsl == "rsl150" && distances[i] == 85){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;
             varsTMP.meanMin = 0.0;
             varsTMP.meanMax = 0.0;
+            varsTMP.mpvIni = 22.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl70" && distances[i] == 217.5){
+        }  
+        else if(rsl == "rsl150" && distances[i] == 125){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
+            varsTMP.meanIni = 0.0;
+            varsTMP.mpvIni = 15.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl70" && distances[i] == 242.5){
+        }      
+        else if(rsl == "rsl150" && distances[i] == 225){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
+            varsTMP.meanIni = 4.0;
+            varsTMP.mpvIni = 4.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
-        else if(rsl == "rsl130" && distances[i] == 137.5){
+        else if(rsl == "rsl150" && distances[i] == 245){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
+            varsTMP.meanIni = 0;
+            varsTMP.mpvIni = 6.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl130" && distances[i] == 182.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 5.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.01;
-            varsTMP.meanMax = 100.0;
-            vars.mpvIni = 5.0;
-            vars.widthMin = 0.001;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl130" && distances[i] == 207.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl130" && distances[i] == 212.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl130" && distances[i] == 222.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl150" && distances[i] == 172.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 5.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.01;
-            varsTMP.meanMax = 100.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl150" && distances[i] == 177.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 5.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.01;
-            varsTMP.meanMax = 100.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-        else if(rsl == "rsl150" && distances[i] == 212.5){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;//Apply N(0, width)---
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        } 
-*/
+        }
+
         else{
             tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
         }
@@ -792,10 +904,10 @@ void slice_fitTMP(const std::string& rsl){
 void slice_fit(){
 
     slice_fitTMP("rsl99");
-//    slice_fitTMP("rsl50");
-//    slice_fitTMP("rsl70");
-//    slice_fitTMP("rsl130");      
-//    slice_fitTMP("rsl150");    
+    slice_fitTMP("rsl50");
+    slice_fitTMP("rsl70");
+    slice_fitTMP("rsl130");      
+    slice_fitTMP("rsl150");    
 
 }
 //=========================================================

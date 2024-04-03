@@ -123,38 +123,144 @@ void ChebyshevFit(TGraphErrors* graph, double minX, double maxX) {
 //===The MAIN function=========================================================
 void compare_fit(){
 
-    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop/cathode/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_slice10cm/cathode/";
     TFile *file = TFile::Open((file_path + "fitCLG1_compare.root").c_str(), "UPDATE");
 
-    TCanvas *canvas = (TCanvas*)file->Get("fitBias");    
+
+
+
+    //fit rsl50--------------------------------------------------
+    TCanvas *canvas_rsl50 = (TCanvas*)file->Get("fitBias_rsl50");    
 
     //Delete added canvas due to last execution---
     gDirectory->cd(file->GetName());
-    gDirectory->Delete("linear_fit;*");
+    gDirectory->Delete("linearFit_rsl50;*");
 
     //clone the canvas---
-    TCanvas *new_canvas = (TCanvas*)canvas->Clone();
-    new_canvas->SetName("linear_fit");
-    new_canvas->SetTitle("Plots with fitted lines");
+    TCanvas *new_canvas_rsl50 = (TCanvas*)canvas_rsl50->Clone();
+    new_canvas_rsl50->SetName("linearFit_rsl50");
+    new_canvas_rsl50->SetTitle("Plots with fitted lines");
 
-    
-
-    TIter next(canvas->GetListOfPrimitives());
+    TIter next(new_canvas_rsl50->GetListOfPrimitives());
     TObject *obj;
     while ((obj = next())) {
         // Check if the object is a TGraphErrors
         if (obj->InheritsFrom(TGraphErrors::Class())) {
 
             TGraphErrors* graph = (TGraphErrors*)obj;
-            new_canvas->cd();
+            new_canvas_rsl50->cd();
 
-            LinearFit(graph, 50.0, 230.0);
-//            ChebyshevFit(graph, 50.0, 200.0);
+            LinearFit(graph, 50.0, 250.0);
         }
     }
 
+    new_canvas_rsl50->Write();
 
-    new_canvas->Write();
+
+
+    //fit rsl70------------------------------------------------------
+    TCanvas *canvas_rsl70 = (TCanvas*)file->Get("fitBias_rsl70");    
+
+    gDirectory->cd(file->GetName());
+    gDirectory->Delete("linearFit_rsl70;*");
+
+    TCanvas *new_canvas_rsl70 = (TCanvas*)canvas_rsl70->Clone();
+    new_canvas_rsl70->SetName("linearFit_rsl70");
+    new_canvas_rsl70->SetTitle("Plots with fitted lines");
+
+    TIter next_rsl70(new_canvas_rsl70->GetListOfPrimitives());
+    TObject *obj_rsl70;
+    while ((obj_rsl70 = next_rsl70())) {
+        if (obj_rsl70->InheritsFrom(TGraphErrors::Class())) {
+
+            TGraphErrors* graph = (TGraphErrors*)obj_rsl70;
+            new_canvas_rsl70->cd();
+
+            LinearFit(graph, 50.0, 250.0);
+        }
+    }
+
+    new_canvas_rsl70->Write();
+
+
+
+    //fit rsl130------------------------------------------------------
+    TCanvas *canvas_rsl130 = (TCanvas*)file->Get("fitBias_rsl130");    
+
+    gDirectory->cd(file->GetName());
+    gDirectory->Delete("linearFit_rsl130;*");
+
+    TCanvas *new_canvas_rsl130 = (TCanvas*)canvas_rsl130->Clone();
+    new_canvas_rsl130->SetName("linearFit_rsl130");
+    new_canvas_rsl130->SetTitle("Plots with fitted lines");
+
+    TIter next_rsl130(new_canvas_rsl130->GetListOfPrimitives());
+    TObject *obj_rsl130;
+    while ((obj_rsl130 = next_rsl130())) {
+        if (obj_rsl130->InheritsFrom(TGraphErrors::Class())) {
+
+            TGraphErrors* graph = (TGraphErrors*)obj_rsl130;
+            new_canvas_rsl130->cd();
+
+            LinearFit(graph, 50.0, 250.0);
+        }
+    }
+
+    new_canvas_rsl130->Write();
+
+
+
+    //fit rsl150------------------------------------------------------
+    TCanvas *canvas_rsl150 = (TCanvas*)file->Get("fitBias_rsl150");    
+
+    gDirectory->cd(file->GetName());
+    gDirectory->Delete("linearFit_rsl150;*");
+
+    TCanvas *new_canvas_rsl150 = (TCanvas*)canvas_rsl150->Clone();
+    new_canvas_rsl150->SetName("linearFit_rsl150");
+    new_canvas_rsl150->SetTitle("Plots with fitted lines");
+
+    TIter next_rsl150(new_canvas_rsl150->GetListOfPrimitives());
+    TObject *obj_rsl150;
+    while ((obj_rsl150 = next_rsl150())) {
+        if (obj_rsl150->InheritsFrom(TGraphErrors::Class())) {
+
+            TGraphErrors* graph = (TGraphErrors*)obj_rsl150;
+            new_canvas_rsl150->cd();
+
+            LinearFit(graph, 50.0, 250.0);
+        }
+    }
+
+    new_canvas_rsl150->Write();
+
+
+
+    //fit ALL------------------------------------------------------
+    TCanvas *canvas_All = (TCanvas*)file->Get("fitBias_All");    
+
+    gDirectory->cd(file->GetName());
+    gDirectory->Delete("linearFit_All;*");
+
+    TCanvas *new_canvas_All = (TCanvas*)canvas_All->Clone();
+    new_canvas_All->SetName("linearFit_All");
+    new_canvas_All->SetTitle("Plots with fitted lines");
+
+    TIter next_All(new_canvas_All->GetListOfPrimitives());
+    TObject *obj_All;
+    while ((obj_All = next_All())) {
+        if (obj_All->InheritsFrom(TGraphErrors::Class())) {
+
+            TGraphErrors* graph = (TGraphErrors*)obj_All;
+            new_canvas_All->cd();
+
+            LinearFit(graph, 50.0, 250.0);
+        }
+    }
+
+    new_canvas_All->Write();
+
+
 
     file->Close();
 
