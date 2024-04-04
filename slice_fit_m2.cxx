@@ -713,7 +713,6 @@ void slice_fitTMP(const std::string& rsl){
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
 
-
         else{
             tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
         }
