@@ -3,7 +3,7 @@
 
 #single opch extraction-----------------------
 #Pay attention: location of file must be at ./root_data/
-inputFile="rsl150_1000num3_e67_hist"
+inputFile="rsl99_1000num3_e67_hist"
 outputDir="/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/tmp/"
 
 #single opch combination----------------------
