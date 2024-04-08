@@ -476,7 +476,7 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
     scatterGraph->Draw("P");
 
     // Draw linear connections
-//    lineGraph->Draw("L");
+    lineGraph->Draw("L");
 
     // Save the canvas to the output ROOT file
     canvas.Write();
@@ -498,16 +498,16 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 
 
 //==========================================================
-void slice_fitTMP(const std::string& rsl){
+void slice_fitTMP(const std::string& rsl, const std::string& opch){
     //change file name each time-----------------------
-    string file_path = "../results/combine_2000results/";
-    string file_suffix = rsl + "_2000num_e67_crtCut.root";
-//    string file_suffix = rsl + "_1000num_e67_crtCut.root";//only For RSL100---   
-    string output_path = "../results/fit_Develop/membrane2/";
-    string output_name = "fitCLG1";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_m2check/combine_3000results/";
+    string file_suffix = rsl + "_3000num_e67_crtCut.root";   
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_m2check/membrane2/";
+
+    string output_name = rsl + "_" + opch;
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/membrane2/"+rsl+"_fitCLG1.txt");
+    std::ofstream outputTxt(output_path + "output_" + rsl + "_" + opch +".txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
@@ -533,8 +533,7 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Access the TH2F from the file---
-    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM2");
-//    TH2F* inputTH2F = (TH2F*)inputFile->Get("membrane2");//Only for RSL100---    
+    TH2F* inputTH2F = (TH2F*)inputFile->Get(opch.c_str());   
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -571,7 +570,7 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Open the output ROOT file for writing---
-    TFile* outputFile = new TFile(TString(output_path)+TString(output_name)+"_"+TString(file_suffix), "RECREATE");
+    TFile* outputFile = new TFile(TString(output_path)+TString(output_name)+"_3000num_e67_crtCut.root", "RECREATE");
 
     double borderL = 0.0;
     double borderR = 0.0;
@@ -670,11 +669,11 @@ void slice_fitTMP(const std::string& rsl){
 //Main function!============================================
 void slice_fit_m2(){
 
-//    slice_fitTMP("rsl99");
+    slice_fitTMP("rsl99", "opch01");
 //    slice_fitTMP("rsl50");
 //    slice_fitTMP("rsl70");
 //    slice_fitTMP("rsl100");
-    slice_fitTMP("rsl130");
+//    slice_fitTMP("rsl130");
 //    slice_fitTMP("rsl150");    
 
 }

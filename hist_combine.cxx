@@ -17,17 +17,15 @@ int hist_combine(){
         return 1;
     }
     //Open the second root file---
-//    TFile *file1 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num2_e67_hist.root", "READ");
+    TFile *file1 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num2_e67_hist.root", "READ");
 
-    TFile *file1 = new TFile("../results/combine_2000results/"+TString(rslxx)+"_2000num_e67_crtCut.root", "READ");
+    TFile *file2 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num_e67_hist.root", "READ");
 
 
     //Output location:------------
-//    string output_path = "../results/combine_2000results/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_m2check/combine_3000results/";
 
-    string output_path = "../results/combine_3000results/";
-
-    string output_name = rslxx + "_2000num_e67_crtCut.root";
+    string output_name = "opchCombine_"+ rslxx + "_3000num_e67_crtCut.root";
     //===================================================
 
 
@@ -36,40 +34,35 @@ int hist_combine(){
 
     //Get access to histos inside root files----------------------------
     TH2F *hist10 = dynamic_cast<TH2F*>(file0->Get("cathode8XA"));
-//    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("cathode8XA"));  
-
-    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("summedCathode8XA")); 
+    TH2F *hist11 = dynamic_cast<TH2F*>(file1->Get("cathode8XA"));  
+    TH2F *hist12 = dynamic_cast<TH2F*>(file2->Get("cathode8XA")); 
 
 
     TH2F *hist20 = dynamic_cast<TH2F*>(file0->Get("membrane1"));
-//    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("membrane1"));    
-
-    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("summedM1")); 
+    TH2F *hist21 = dynamic_cast<TH2F*>(file1->Get("membrane1"));    
+    TH2F *hist22 = dynamic_cast<TH2F*>(file2->Get("membrane1")); 
 
 
     TH2F *hist30 = dynamic_cast<TH2F*>(file0->Get("membrane2"));
-//    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("membrane2"));    
-
-    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("summedM2"));  
+    TH2F *hist31 = dynamic_cast<TH2F*>(file1->Get("membrane2"));    
+    TH2F *hist32 = dynamic_cast<TH2F*>(file2->Get("membrane2"));  
 
 
     TH2F *hist40 = dynamic_cast<TH2F*>(file0->Get("pmt1"));
-//    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("pmt1"));    
-
-    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("summedPMT1"));
+    TH2F *hist41 = dynamic_cast<TH2F*>(file1->Get("pmt1"));    
+    TH2F *hist42 = dynamic_cast<TH2F*>(file2->Get("pmt1"));
 
 
     TH2F *hist50 = dynamic_cast<TH2F*>(file0->Get("pmt2"));
-//    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("pmt2"));    
-
-    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("summedPMT2")); 
+    TH2F *hist51 = dynamic_cast<TH2F*>(file1->Get("pmt2"));    
+    TH2F *hist52 = dynamic_cast<TH2F*>(file2->Get("pmt2")); 
 
 
    
     //Create new hist to store cathode 8 XAs-----------------------
     TH2F *hist_cathode8XA = new TH2F(*hist10);
     hist_cathode8XA->Add(hist11);
-//    hist_cathode8XA->Add(hist12);
+    hist_cathode8XA->Add(hist12);
 
     hist_cathode8XA->SetName("summedCathode8XA");
     hist_cathode8XA->SetTitle("Response of Cathode 8 XAs");
@@ -82,7 +75,7 @@ int hist_combine(){
     //Create new hist to store opch 00, 02, 17, 23---------------
     TH2F *hist_m1 = new TH2F(*hist20);
     hist_m1->Add(hist21);
-//    hist_m1->Add(hist22);
+    hist_m1->Add(hist22);
 
     hist_m1->SetName("summedM1");
     hist_m1->SetTitle("Response of OpCh 00, 02, 17 & 23");
@@ -94,7 +87,7 @@ int hist_combine(){
     //Create new hist to store opch 01, 03, 16, 22---------------
     TH2F *hist_m2 = new TH2F(*hist30);
     hist_m2->Add(hist31);
-//    hist_m2->Add(hist32);
+    hist_m2->Add(hist32);
 
     hist_m2->SetName("summedM2");
     hist_m2->SetTitle("Response of OpCh 01, 03, 16 & 22");
@@ -107,7 +100,7 @@ int hist_combine(){
     //Create new hist to store opch 31, 33---------------
     TH2F *hist_p1 = new TH2F(*hist40);
     hist_p1->Add(hist41);
-//    hist_p1->Add(hist42);
+    hist_p1->Add(hist42);
 
     hist_p1->SetName("summedPMT1");
     hist_p1->SetTitle("Response of OpCh 31 & 33");
@@ -120,7 +113,7 @@ int hist_combine(){
     //Create new hist to store opch 12~15, 24~29, 30, 32, 34~39--------
     TH2F *hist_p2 = new TH2F(*hist50);
     hist_p2->Add(hist51);
-//    hist_p2->Add(hist52);
+    hist_p2->Add(hist52);
 
     hist_p2->SetName("summedPMT2");
     hist_p2->SetTitle("Response of OpCh 12~15, 24~29, 30, 32, 34~39");
@@ -148,7 +141,7 @@ int hist_combine(){
 
     delete file0;
     delete file1;
-//    delete file2;   
+    delete file2;   
     delete outputFile;
 
     return 0;
