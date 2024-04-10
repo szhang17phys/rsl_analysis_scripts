@@ -495,6 +495,178 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 
 
 
+//==========================================================
+void slice_fitTMP2(const std::string& rsl){
+    //change file name each time-----------------------
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_m2check/combine_3000results/";
+    string file_suffix = "opchCombine_" + rsl + "_3000num_e67_crtCut.root";
+//    string file_suffix = rsl + "_1000num_e67_crtCut.root";//only For RSL100---   
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_m2check/membrane2/combineOpch/";
+    string output_name = "fitCLG1";
+
+    //store fitting results at txt file---
+    std::ofstream outputTxt(output_path+rsl+"_fitCLG1.txt");
+
+    //Choose the slice you want to look at!---
+    //Define the X(distance) values where you want to extract data---
+    Double_t distances[60];
+    for (int i=0; i<60; ++i){
+        distances[i] = 10*i + 5;
+    }
+    //----------------------------------------------------
+
+    FitResults tmpResults; //used to tmporarily store fitResults---
+    Double_t mpvConv[60];
+    Double_t sigConv[60];
+    Int_t numHist[60];
+
+
+    //Open the input root file----------------------------------------------------
+    TFile* inputFile = new TFile(TString(file_path)+TString(file_suffix), "READ");
+
+    //Check if the file is open---
+    if(!inputFile || inputFile->IsZombie()){
+        std::cerr<<"Error: Cannot open input.root"<<std::endl;
+        return;
+    }
+
+    //Access the TH2F from the file---
+    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM2");
+//    TH2F* inputTH2F = (TH2F*)inputFile->Get("membrane2");//Only for RSL100---    
+
+    if(!inputTH2F){
+        std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
+        inputFile->Close();
+        return;
+    }
+
+    //Create an array of TH1F histograms to store extracted data---
+    //num = 60 here!---
+    const int num = sizeof(distances)/sizeof(distances[0]);
+    TH1F* hists[num];
+
+    //Extract values from TH2F and create TH1F---
+    for(int i=0; i<num; ++i){
+        double x = distances[i];
+        int binX = inputTH2F->GetXaxis()->FindBin(x);
+
+        //Create a TH1F for each extracted data---
+        hists[i] = new TH1F(Form("hist_%d", i), Form("Distance = %.1f cm", x), inputTH2F->GetNbinsY(), inputTH2F->GetYaxis()->GetXmin(), inputTH2F->GetYaxis()->GetXmax());
+
+        hists[i]->GetXaxis()->SetTitle("# #gamma");
+        hists[i]->GetYaxis()->SetTitle("Event Rate");
+
+        //Fill the TH1F with data from the TH2F---
+        for(int binY=1; binY<=inputTH2F->GetNbinsY(); ++binY){
+            double y = inputTH2F->GetYaxis()->GetBinCenter(binY);
+            double value = inputTH2F->GetBinContent(binX, binY);
+            hists[i]->SetBinContent(binY, value);
+        }
+
+        //Set the line color for each TH1F(optional)---
+        hists[i]->SetLineColor(i + 1);
+
+    }
+
+    //Open the output ROOT file for writing---
+    TFile* outputFile = new TFile(TString(output_path)+TString(output_name)+"_"+TString(file_suffix), "RECREATE");
+
+    double borderL = 0.0;
+    double borderR = 0.0;
+
+    FitVars vars;
+
+    //draw each histo in single canvas---
+    for(int i=0; i<num; ++i){
+        adjustXAxisBinWidth(hists[i], 1.0);
+
+        if(500 <= distances[i] && distances[i]<600){//hist has 200 bins; initial 800
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+        if(400 <= distances[i] && distances[i]<500){//hist has 100 bins; initial 800
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+        if(0 <= distances[i] && distances[i]<400){//hist has 50 bins; initial 800
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+            combineBins(hists[i]);
+        }
+
+        borderR = rightBorder(hists[i]);
+        borderL = leftBorder(hists[i]); 
+
+        vars.fitRangeMin = borderL;
+        vars.fitRangeMax = borderR;
+
+        vars.mpvIni = 100.0;
+        vars.mpvMin = 1.0;
+        vars.mpvMax = 1000.0;
+
+        vars.widthIni = 50.0;
+        vars.widthMin = 0.01;
+        vars.widthMax = 800.0;
+
+        vars.meanIni = 100.0;
+        vars.meanMin = 1.0;
+        vars.meanMax = 1000.0;
+
+        vars.sigmaIni = 50.0;
+        vars.sigmaMin = 0.01;
+        vars.sigmaMax = 800.0;
+
+        string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
+        const char * name = nameS.c_str();
+
+        tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+
+        mpvConv[i] = tmpResults.mpvC * 1.0;
+        sigConv[i] = tmpResults.sigC * 1.0;
+        numHist[i] = tmpResults.num;
+//        hists[i]->Write();
+    }
+    
+    //Draw mpvConv on TH2F---
+    DrawScatterWithLine(inputTH2F, distances, mpvConv, sigConv, num, outputFile);
+
+
+    //Create a subdirectory within the output file
+    TDirectory* histDirectory = outputFile->mkdir("Initial_Hist");
+    histDirectory->cd();
+    for(int i=0; i<num; ++i){
+        hists[i]->Write();
+    }
+    
+    //Close the input and output files---
+    outputFile->Close();
+    inputFile->Close();
+
+
+
+    //Store fitting files---------
+    if (!outputTxt.is_open()) {
+        std::cerr << "Error: Cannot open output file for writing" << std::endl;
+        return;
+    }
+    //Write distances, mpvConv and sigConv
+    for (int i = 0; i < num; ++i) {
+        outputTxt << distances[i] << "\t" << mpvConv[i] << "\t" << sigConv[i] << "\t" << numHist[i] << std::endl;
+    }
+    outputTxt.close();
+
+}
+//----------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 //==========================================================
@@ -669,13 +841,28 @@ void slice_fitTMP(const std::string& rsl, const std::string& opch){
 //Main function!============================================
 void slice_fit_m2(){
 
-    slice_fitTMP("rsl99", "opch01");
-//    slice_fitTMP("rsl50");
-//    slice_fitTMP("rsl70");
-//    slice_fitTMP("rsl100");
-//    slice_fitTMP("rsl130");
-//    slice_fitTMP("rsl150");    
+/*    slice_fitTMP("rsl50", "opch03");
+    slice_fitTMP("rsl50", "opch16");
+    slice_fitTMP("rsl50", "opch22");
+    slice_fitTMP("rsl70", "opch01");
+    slice_fitTMP("rsl70", "opch03");
+    slice_fitTMP("rsl70", "opch16");
+    slice_fitTMP("rsl70", "opch22");
+    slice_fitTMP("rsl130", "opch01");
+    slice_fitTMP("rsl130", "opch03");   
+    slice_fitTMP("rsl130", "opch16");
+    slice_fitTMP("rsl130", "opch22");
+    slice_fitTMP("rsl150", "opch01");
+    slice_fitTMP("rsl150", "opch03");   
+    slice_fitTMP("rsl150", "opch16");
+    slice_fitTMP("rsl150", "opch22");    
+*/
 
+    //For combined opch---
+//    slice_fitTMP2("rsl70");
+    slice_fitTMP2("rsl130");
+    slice_fitTMP2("rsl150");
+//    slice_fitTMP2("rsl99");
 }
 //=========================================================
 

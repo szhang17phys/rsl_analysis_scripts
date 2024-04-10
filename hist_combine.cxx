@@ -8,7 +8,7 @@
 int hist_combine(){
     //Input & output root files===========================
 
-    string rslxx ="rsl150";
+    string rslxx ="rsl130";
 
     //Open the first ROOT file---
     TFile *file0 = new TFile("../results/tmp/Combine_"+TString(rslxx)+"_1000num3_e67_hist.root", "READ");
