@@ -1,0 +1,4 @@
+#Created by Shu, 20240410---
+
+The new distance is just the solid angle.
+For concept, refer to Apr09_2024_Tue slides
