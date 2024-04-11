@@ -15,10 +15,12 @@
 using namespace std;
 
 void test(){
-    Point3D opch = {0, 0, 0};
-    Point3D topCRT = {400, 588.2, 100};
-    Point3D botCRT = {-300, -588.2, 180};
+    Point3D v1 = {200, -417, 149};
+    Point3D v2 = {380, 588, 130};
+    Point3D v3 = {-400, -588, 100};
 
-    m_solid_angle(opch, topCRT, botCRT);
+
+    cout<<"\nAverage Solid angle: "<< solid_angle(v1, v2, v3)<<endl;
+
 
 }

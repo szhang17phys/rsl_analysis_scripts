@@ -53,7 +53,9 @@ double distance_point_line(const Point3D& point, const Point3D& segmentStart, co
 
 
 
-//output cos of angle of two vectors---
+
+
+//output cos of angle of two vectors=======================
 double cos(const Point3D& v1, const Point3D& v2){
     double dot = 0.0; //dot product
     double mag1 = 0.0; //length of v1
@@ -67,15 +69,17 @@ double cos(const Point3D& v1, const Point3D& v2){
 }
 
 
-
+//output square of vector==================
+double square(const Point3D& v1){
+    return (v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
+}
 
 
 
 
 //distance, the solid angle this time===================================
-//Only for membrane XAs---
 //top is top crt, bot is bottom crt, opch is center of opch
-double m_solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
+double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
 
     //specify points num from track-----------------------
     int num = 16;
@@ -104,30 +108,59 @@ double m_solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot
         points[i].z = trueStart.z - (i+1) * step * (trueStart.z - trueEnd.z);
     }
 
-
-
-
-
-
-
-
-    //For test----------------------
-    std::cout<<"\nTopCRT: (" << top.x << ", " << top.y << ", " << top.z << ")\n" <<std::endl;
-
-    std::cout<<"BotCRT: (" << bot.x << ", " << bot.y << ", " << bot.z << ")\n" <<std::endl;
-
-    std::cout<<"trueStart: (" << trueStart.x << ", " << trueStart.y << ", " << trueStart.z << ")\n" <<std::endl;
-
-    std::cout<<"trueEnd: (" << trueEnd.x << ", " << trueEnd.y << ", " << trueEnd.z << ")\n" <<std::endl;
-
-    std::cout<<"\nPoints along the track:-------------"<<std::endl;
-    for (int i = 0; i < num; ++i) {
-        std::cout << "(" << points[i].x << ", " << points[i].y << ", " << points[i].z << ")" << std::endl;
+    Point3D vectors[num];//from opch center to point---
+    for(int i=0; i<num; ++i){
+        vectors[i].x = points[i].x - opch.x;
+        vectors[i].y = points[i].y - opch.y;
+        vectors[i].z = points[i].z - opch.z;        
     }
-    std::cout<<"\n"<<std::endl;
+
+    Point3D opchV = {0.0, 0.0, 0.0};//normal line of opch---
+    if(opch.y>400 && opch.x>-300){//opch 0, 2, 16, 22
+        opchV.x = 0.0;
+        opchV.y = -1.0;
+        opchV.z = 0.0;
+    }
+    if(opch.y<-400 && opch.x>-300){//opch 1, 3, 17, 23
+        opchV.x = 0.0;
+        opchV.y = 1.0;
+        opchV.z = 0.0;
+    }
+    if(opch.x<50 && opch.x>-50){//cathode xa
+        opchV.x = 1.0;
+        opchV.y = 0.0;
+        opchV.z = 0.0;
+    }
+    if(opch.z<-300){//ground pmts
+        opchV.x = 1.0;
+        opchV.y = 0.0;
+        opchV.z = 0.0;
+    }    
+    if(opch.z<-50 && opch.x>-300){//-z high pmts
+        opchV.x = 0.0;
+        opchV.y = 0.0;
+        opchV.z = 1.0;
+    }
+    if(opch.z>350 && opch.x>-300){//+z high pmts
+        opchV.x = 0.0;
+        opchV.y = 0.0;
+        opchV.z = -1.0;
+    }
+
+    //Define solid angle---
+    double omg =  0.0;
+    double tmp = 0.0;
+    for(int i=0; i<num; ++i){
+        tmp = 3600 * cos(opchV, vectors[i]) / square(vectors[i]);
+        if(opch.x<50 && opch.x>-50){//cathode xa double-side active
+            tmp = std::abs(tmp);
+        }
+        omg += tmp;
+    }
+    omg = 1000.0 * omg / num;//make omg looking-better
 
 
-    return 0;
+    return omg;
 
 }
 
