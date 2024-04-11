@@ -466,27 +466,26 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 //==========================================================
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
-    string file_path = "../results/combine_2000results/";
-//    string file_suffix = rsl + "_2000num_e67_crtCut.root";
-    string file_suffix = rsl + "_1000num_e67_crtCut.root";//only For RSL100---    
-    string output_path = "../results/fit_Develop/membrane1/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/combine_3000results/";
+    string file_suffix = rsl + "_3000num_e67_crtCut.root";   
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/membrane1/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
-    std::ofstream outputTxt("../results/fit_Develop/membrane1/"+rsl+"_fitCLG1.txt");
+    std::ofstream outputTxt(output_path + rsl + "_fitCLG1.txt");
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
-    Double_t distances[60];
-    for (int i=0; i<60; ++i){
-        distances[i] = 5*i + 2.5;
+    Double_t distances[50];
+    for (int i=0; i<50; ++i){
+        distances[i] = 4.0*i + 2.0;
     }
     //----------------------------------------------------
 
     FitResults tmpResults; //used to tmporarily store fitResults---
-    Double_t mpvConv[60];
-    Double_t sigConv[60];
-    Int_t numHist[60];
+    Double_t mpvConv[50];
+    Double_t sigConv[50];
+    Int_t numHist[50];
 
 
     //Open the input root file----------------------------------------------------
@@ -499,8 +498,7 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Access the TH2F from the file---
-//    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM1");
-    TH2F* inputTH2F = (TH2F*)inputFile->Get("membrane1");//Only for RSL100---    
+    TH2F* inputTH2F = (TH2F*)inputFile->Get("summedM1");    
 
     if(!inputTH2F){
         std::cerr<<"Error: Cannot find TH2F in the input file"<< std::endl;
@@ -509,7 +507,7 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Create an array of TH1F histograms to store extracted data---
-    //num = 60 here!---
+    //num = 50 here!---
     const int num = sizeof(distances)/sizeof(distances[0]);
     TH1F* hists[num];
 
@@ -627,7 +625,7 @@ void slice_fitTMP(const std::string& rsl){
 //Main function!============================================
 void slice_fit_m1(){
 
-    slice_fitTMP("rsl100");
+    slice_fitTMP("rsl99");
 //    slice_fitTMP("rsl50");
 //    slice_fitTMP("rsl70");
 //    slice_fitTMP("rsl150");    

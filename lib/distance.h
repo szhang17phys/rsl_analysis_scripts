@@ -82,7 +82,7 @@ double square(const Point3D& v1){
 double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
 
     //specify points num from track-----------------------
-    int num = 16;
+    int num = 1024;
     //----------------------------------------------------
 
     //Store points of the track---
@@ -158,6 +158,12 @@ double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
         omg += tmp;
     }
     omg = 1000.0 * omg / num;//make omg looking-better
+
+
+    //test---
+//    for(int i=0; i<num; ++i){
+//        cout<<"Point "<<i<<": ("<<points[i].x<<", "<<points[i].y<<", "<<points[i].z<<")"<<endl;
+//    }
 
 
     return omg;
