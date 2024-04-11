@@ -16,6 +16,8 @@ double magnitudeSquared(const Point3D& v){
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
+
+//distance between point and line=====================
 double distance_point_line(const Point3D& point, const Point3D& segmentStart, const Point3D& segmentEnd){
     // Vector representing the line segment---
     Point3D segmentVector = {segmentEnd.x-segmentStart.x, segmentEnd.y-segmentStart.y, segmentEnd.z-segmentStart.z};
@@ -48,6 +50,91 @@ double distance_point_line(const Point3D& point, const Point3D& segmentStart, co
     }
 
 }
+
+
+
+//output cos of angle of two vectors---
+double cos(const Point3D& v1, const Point3D& v2){
+    double dot = 0.0; //dot product
+    double mag1 = 0.0; //length of v1
+    double mag2 = 0.0;
+
+    dot = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    mag1 = std::sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
+    mag2 = std::sqrt(v2.x * v2.x + v2.y * v2.y + v2.z * v2.z);
+
+    return dot/(1.0 * mag1 * mag2);
+}
+
+
+
+
+
+
+
+//distance, the solid angle this time===================================
+//Only for membrane XAs---
+//top is top crt, bot is bottom crt, opch is center of opch
+double m_solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
+
+    //specify points num from track-----------------------
+    int num = 16;
+    //----------------------------------------------------
+
+    //Store points of the track---
+    Point3D points[num];
+    double step = 1.0 / (num + 1);
+
+    Point3D trueStart = {0.0, 0.0, 0.0};//near top crt---
+    Point3D trueEnd = {0.0, 0.0, 0.0};
+
+    trueStart.y = 417.6;
+    trueEnd.y = -417.6;
+
+    double ratio = (top.y - trueStart.y) / (top.y - bot.y);
+
+    trueStart.x = top.x - ratio * (top.x - bot.x);
+    trueStart.z = top.z - ratio * (top.z - bot.z);
+    trueEnd.x = bot.x + ratio * (top.x - bot.x);
+    trueEnd.z = bot.z + ratio * (top.z - bot.z);    
+
+    for(int i=0; i<num; ++i){
+        points[i].x = trueStart.x - (i+1) * step * (trueStart.x - trueEnd.x);
+        points[i].y = trueStart.y - (i+1) * step * (trueStart.y - trueEnd.y);
+        points[i].z = trueStart.z - (i+1) * step * (trueStart.z - trueEnd.z);
+    }
+
+
+
+
+
+
+
+
+    //For test----------------------
+    std::cout<<"\nTopCRT: (" << top.x << ", " << top.y << ", " << top.z << ")\n" <<std::endl;
+
+    std::cout<<"BotCRT: (" << bot.x << ", " << bot.y << ", " << bot.z << ")\n" <<std::endl;
+
+    std::cout<<"trueStart: (" << trueStart.x << ", " << trueStart.y << ", " << trueStart.z << ")\n" <<std::endl;
+
+    std::cout<<"trueEnd: (" << trueEnd.x << ", " << trueEnd.y << ", " << trueEnd.z << ")\n" <<std::endl;
+
+    std::cout<<"\nPoints along the track:-------------"<<std::endl;
+    for (int i = 0; i < num; ++i) {
+        std::cout << "(" << points[i].x << ", " << points[i].y << ", " << points[i].z << ")" << std::endl;
+    }
+    std::cout<<"\n"<<std::endl;
+
+
+    return 0;
+
+}
+
+
+
+
+
 
 
 
