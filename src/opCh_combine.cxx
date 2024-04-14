@@ -129,7 +129,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m4XA_1->SetName("membrane1");
     hist_m4XA_1->SetTitle("Response of OpCh00, 02, 17 & 23");
-    hist_m4XA_1->GetXaxis()->SetTitle("#Omega/1000");
+    hist_m4XA_1->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_m4XA_1->GetYaxis()->SetTitle("#photon / event");
     hist_m4XA_1->SetMarkerStyle(21);
     hist_m4XA_1->SetMarkerSize(1.0);
@@ -142,7 +142,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m4XA_2->SetName("membrane2");
     hist_m4XA_2->SetTitle("Response of OpCh01, 03, 16 & 22");
-    hist_m4XA_2->GetXaxis()->SetTitle("#Omega/1000");
+    hist_m4XA_2->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_m4XA_2->GetYaxis()->SetTitle("#photon / event");
     hist_m4XA_2->SetMarkerStyle(21);
     hist_m4XA_2->SetMarkerSize(1.0);

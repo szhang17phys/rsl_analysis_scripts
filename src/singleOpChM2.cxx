@@ -161,7 +161,7 @@ void singleOpChM2(string file_suffix, string output_path, Int_t opch, string opc
    
     //CRT_XA_response->SetTitle("Photon counts vs distance to cosmic muon track");
     CRT_XA_response->SetTitle(TString(opch_string));
-	CRT_XA_response->GetXaxis()->SetTitle("#Omega/1000");
+	CRT_XA_response->GetXaxis()->SetTitle("#Omega * 1000");
 	CRT_XA_response->GetYaxis()->SetTitle("#photon / event");
     CRT_XA_response->SetMarkerStyle(21);
     CRT_XA_response->SetMarkerSize(1.0);

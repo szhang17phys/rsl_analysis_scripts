@@ -79,7 +79,7 @@ int hist_combine(){
 
     hist_m1->SetName("summedM1");
     hist_m1->SetTitle("Response of OpCh 00, 02, 17 & 23");
-    hist_m1->GetXaxis()->SetTitle("#Omega/1000");
+    hist_m1->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_m1->GetYaxis()->SetTitle("#photon / event");
     hist_m1->SetMarkerStyle(21);
     hist_m1->SetMarkerSize(1.0);
@@ -91,7 +91,7 @@ int hist_combine(){
 
     hist_m2->SetName("summedM2");
     hist_m2->SetTitle("Response of OpCh 01, 03, 16 & 22");
-    hist_m2->GetXaxis()->SetTitle("#Omega/1000");
+    hist_m2->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_m2->GetYaxis()->SetTitle("#photon / event");
     hist_m2->SetMarkerStyle(21);
     hist_m2->SetMarkerSize(1.0);
