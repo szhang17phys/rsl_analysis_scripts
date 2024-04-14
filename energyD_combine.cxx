@@ -20,7 +20,7 @@ int energyD_combine(){
     //Open the second root file---
     TFile *file1 = new TFile("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/tmp/opCh00_rsl99_1000num2_e67_hist.root", "READ");
     //Open the third root file---
-//    TFile *file2 = new TFile("./results/rsl99_500num/Combine_Response.root", "READ");
+    TFile *file2 = new TFile("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/tmp/opCh00_rsl99_1000num3_e67_hist.root", "READ");
 
     //Output location:------------
     string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop/cathode/";
@@ -31,11 +31,14 @@ int energyD_combine(){
     //Get access to histos inside root files--------------------------------------
     TGraph *graph0 = dynamic_cast<TGraph*>(file0->Get("Graph"));
     TGraph *graph1 = dynamic_cast<TGraph*>(file1->Get("Graph"));
+    TGraph *graph2 = dynamic_cast<TGraph*>(file2->Get("Graph"));
 
     TH1F *before0 = dynamic_cast<TH1F*>(file0->Get("hist_energyB"));
     TH1F *after0 = dynamic_cast<TH1F*>(file0->Get("hist_energyA"));    
     TH1F *before1 = dynamic_cast<TH1F*>(file1->Get("hist_energyB"));
-    TH1F *after1 = dynamic_cast<TH1F*>(file1->Get("hist_energyA"));    
+    TH1F *after1 = dynamic_cast<TH1F*>(file1->Get("hist_energyA")); 
+    TH1F *before2 = dynamic_cast<TH1F*>(file2->Get("hist_energyB"));
+    TH1F *after2 = dynamic_cast<TH1F*>(file2->Get("hist_energyA"));   
 
 
    //Create NEW root file--------------------------------------------------------
@@ -59,6 +62,11 @@ int energyD_combine(){
         graph1->GetPoint(i, x, y);
         graphC->SetPoint(graph0->GetN()+i, x, y);
     }
+    for(int i = 0; i < graph2->GetN(); ++i) {
+        double x, y;
+        graph2->GetPoint(i, x, y);
+        graphC->SetPoint(graph0->GetN()+i, x, y);
+    }
 
     //prevent drawing a line from the origin to the data points
     graphC->SetLineWidth(0);
@@ -74,10 +82,12 @@ int energyD_combine(){
     //Energy Distributions w/o crt cut------------------------------
     TH1F *beforeC = new TH1F(*before0);
     beforeC->Add(before1);
+    beforeC->Add(before2);
     beforeC->SetName("noCut");
 
     TH1F *afterC = new TH1F(*after0);
     afterC->Add(after1);
+    afterC->Add(after2);
     afterC->SetName("withCut");
 
     TCanvas *canvas = new TCanvas("crtCut", "Energy Distribution", 800, 600);
@@ -104,6 +114,7 @@ int energyD_combine(){
     //close files-------------
     file0->Close();
     file1->Close();  
+    file2->Close(); 
     outputFile->Close();
 
     return 0;
