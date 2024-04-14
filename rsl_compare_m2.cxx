@@ -208,7 +208,7 @@ void rsl_compareTMP(const std::string& path){
     
     legend->AddEntry(scatterGraph150, "RSL = 150.0cm", "pe");
     legend->AddEntry(scatterGraph130, "RSL = 130.0cm", "pe");
-    legend->AddEntry(scatterGraph, "RSL = 99.9cm", "pe");
+    legend->AddEntry(scatterGraph, "RSL = 100cm", "pe");
     legend->AddEntry(scatterGraph70, "RSL = 70.0cm", "pe");
     legend->AddEntry(scatterGraph50, "RSL = 50.0cm", "pe");
     legend->Draw();
@@ -293,11 +293,11 @@ void rsl_compareTMP(const std::string& path){
     graphDiff150->SetMarkerColor(kOrange);
     graphDiff150->Draw("P SAME");
     
-    legend2->AddEntry(graphDiff50, "RSL50 - RSL99", "pe");
-    legend2->AddEntry(graphDiff70, "RSL70 - RSL99", "pe");
+    legend2->AddEntry(graphDiff50, "RSL50 - RSL100", "pe");
+    legend2->AddEntry(graphDiff70, "RSL70 - RSL100", "pe");
 
-    legend2->AddEntry(graphDiff130, "RSL130 - RSL99", "pe");
-    legend2->AddEntry(graphDiff150, "RSL150 - RSL99", "pe");
+    legend2->AddEntry(graphDiff130, "RSL130 - RSL100", "pe");
+    legend2->AddEntry(graphDiff150, "RSL150 - RSL100", "pe");
     legend2->Draw();
 
 
