@@ -123,7 +123,7 @@ void ChebyshevFit(TGraphErrors* graph, double minX, double maxX) {
 //===The MAIN function=========================================================
 void compare_fit(){
 
-    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_slice10cm/cathode/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_slice10cm/pmt1/";
     TFile *file = TFile::Open((file_path + "fitCLG1_compare.root").c_str(), "UPDATE");
 
 
@@ -150,7 +150,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj;
             new_canvas_rsl50->cd();
 
-            LinearFit(graph, 50.0, 250.0);
+            LinearFit(graph, 0.0, 150.0);
         }
     }
 
@@ -176,7 +176,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj_rsl70;
             new_canvas_rsl70->cd();
 
-            LinearFit(graph, 50.0, 250.0);
+            LinearFit(graph, 0.0, 150.0);
         }
     }
 
@@ -202,7 +202,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj_rsl130;
             new_canvas_rsl130->cd();
 
-            LinearFit(graph, 50.0, 250.0);
+            LinearFit(graph, 0.0, 150.0);
         }
     }
 
@@ -228,7 +228,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj_rsl150;
             new_canvas_rsl150->cd();
 
-            LinearFit(graph, 50.0, 250.0);
+            LinearFit(graph, 0.0, 150.0);
         }
     }
 
@@ -254,7 +254,7 @@ void compare_fit(){
             TGraphErrors* graph = (TGraphErrors*)obj_All;
             new_canvas_All->cd();
 
-            LinearFit(graph, 50.0, 250.0);
+            LinearFit(graph, 0.0, 150.0);
         }
     }
 
