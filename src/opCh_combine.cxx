@@ -115,7 +115,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_cathode8XA->SetName("cathode8XA");
     hist_cathode8XA->SetTitle("Response of Cathode 8 XAs");
-    hist_cathode8XA->GetXaxis()->SetTitle("Distance [cm]");
+    hist_cathode8XA->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_cathode8XA->GetYaxis()->SetTitle("#photon / event");
     hist_cathode8XA->SetMarkerStyle(21);
     hist_cathode8XA->SetMarkerSize(1.0);

@@ -117,8 +117,8 @@ void singleOpChP1(string file_suffix, string output_path, Int_t opch, string opc
                 CRT_end.x   = CRTBot_posX; 
                 CRT_end.y   = CRTBot_posY;
                 CRT_end.z   = CRTBot_posZ;
-                distance = distance_point_line(Opch_center, CRT_start, CRT_end);
-                cout<<"Distance: "<<distance<<endl; 
+//                distance = distance_point_line(Opch_center, CRT_start, CRT_end);
+                distance = solid_angle(Opch_center, CRT_start, CRT_end);//new "distance", solid angle---
 
                 CRT_XA_response->Fill(distance, CountDetected);
             }
@@ -145,7 +145,7 @@ void singleOpChP1(string file_suffix, string output_path, Int_t opch, string opc
    
     //CRT_XA_response->SetTitle("Photon counts vs distance to cosmic muon track");
     CRT_XA_response->SetTitle(TString(opch_string));
-    CRT_XA_response->GetXaxis()->SetTitle("Distance [cm]");
+    CRT_XA_response->GetXaxis()->SetTitle("#Omega * 1000");
     CRT_XA_response->GetYaxis()->SetTitle("#photon / event");
     CRT_XA_response->SetMarkerStyle(21);
     CRT_XA_response->SetMarkerSize(1.0);
