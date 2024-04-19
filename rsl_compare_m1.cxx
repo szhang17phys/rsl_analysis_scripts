@@ -329,10 +329,12 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
             sigBias70[i] = sigBias(mpv70[i], sigMPV70[i], mpv99[i], sigMPV99[i]);
 //          sigBias130[i] = sigBias(mpv130[i], sigMPV130[i], mpv99[i], sigMPV99[i]);
             sigBias150[i] = sigBias(mpv150[i], sigMPV150[i], mpv99[i], sigMPV99[i]);
+
+            std::cout<<"bias 50: "<< bias50[i] << " , sig: "<< sigBias50[i] <<std::endl;
         }
     }
 
-    if(biasLabel == 2){
+    else if(biasLabel == 2){
         for(int i=0; i<num; ++i){
             bias50[i] = (mpv50[i] - mpv99[i]) / mpv99[i];
             bias70[i] = (mpv70[i] - mpv99[i]) / mpv99[i];
@@ -343,9 +345,13 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
             sigBias70[i] = sigBias2(mpv70[i], sigMPV70[i], mpv99[i], sigMPV99[i]);
 //          sigBias130[i] = sigBias2(mpv130[i], sigMPV130[i], mpv99[i], sigMPV99[i]);
             sigBias150[i] = sigBias2(mpv150[i], sigMPV150[i], mpv99[i], sigMPV99[i]);
+
+            std::cout<<"bias 50: "<< bias50[i] << " , sig: "<< sigBias50[i] <<std::endl;
         }
     }
-
+    else {
+        std::cout<<"Invalid biasLabel..."<<std::endl;
+    }
 
 
 
@@ -468,7 +474,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
 void rsl_compare_m1(){
 
     //For membrane1---
-    rsl_compareTMP("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/membrane1", 3); //1: initial bias; 2: new bias
+    rsl_compareTMP("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/membrane1", 2); //1: initial bias; 2: new bias
         
 
 }
