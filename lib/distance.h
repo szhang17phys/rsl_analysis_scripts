@@ -131,7 +131,7 @@ double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
         opchV.y = 0.0;
         opchV.z = 0.0;
     }
-    if(opch.z<-300){//ground pmts
+    if(opch.x<-300){//ground pmts
         opchV.x = 1.0;
         opchV.y = 0.0;
         opchV.z = 0.0;
@@ -147,11 +147,26 @@ double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
         opchV.z = -1.0;
     }
 
+    double opArea = 0.0;//active area of opch---
+    if(opch.x<-300){//ground pmt
+        opArea = 314.1;//in units of cm^2---
+    }
+    else if(opch.z<-50 && opch.x>-300){//-z high pmts
+        opArea = 314.1;
+    }
+    else if(opch.z>350 && opch.x>-300){//+z high pmts
+        opArea = 314.1;
+    }
+    else{
+        opArea = 3600.0;
+    }
+
+
     //Define solid angle---
     double omg =  0.0;
     double tmp = 0.0;
     for(int i=0; i<num; ++i){
-        tmp = 3600 * cos(opchV, vectors[i]) / square(vectors[i]);
+        tmp = opArea * cos(opchV, vectors[i]) / square(vectors[i]);
         if(opch.x<50 && opch.x>-50){//cathode xa double-side active
             tmp = std::abs(tmp);
         }

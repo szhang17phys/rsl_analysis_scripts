@@ -134,6 +134,31 @@ int opCh_combine(string input_path, string input_name, string output_path){
     hist_m4XA_1->SetMarkerStyle(21);
     hist_m4XA_1->SetMarkerSize(1.0);
 
+
+    //Create new hist to store XA: 0, 2-----------------------
+    TH2F *hist_m2XA_1 = new TH2F(*hist00);
+    hist_m2XA_1->Add(hist02);
+
+    hist_m2XA_1->SetName("m1Up");
+    hist_m2XA_1->SetTitle("Response of OpCh00 & 02");
+    hist_m2XA_1->GetXaxis()->SetTitle("#Omega * 1000");
+	hist_m2XA_1->GetYaxis()->SetTitle("#photon / event");
+    hist_m2XA_1->SetMarkerStyle(21);
+    hist_m2XA_1->SetMarkerSize(1.0);
+
+
+    //Create new hist to store XA: 17, 23-----------------------
+    TH2F *hist_m2XA_2 = new TH2F(*hist17);
+    hist_m2XA_2->Add(hist23);
+
+    hist_m2XA_2->SetName("m1Down");
+    hist_m2XA_2->SetTitle("Response of OpCh17 & 23");
+    hist_m2XA_2->GetXaxis()->SetTitle("#Omega * 1000");
+	hist_m2XA_2->GetYaxis()->SetTitle("#photon / event");
+    hist_m2XA_2->SetMarkerStyle(21);
+    hist_m2XA_2->SetMarkerSize(1.0);
+
+
     //Create new hist to store XA: 1, 3, 16, 22-----------------------
     TH2F *hist_m4XA_2 = new TH2F(*hist01);
     hist_m4XA_2->Add(hist03);
@@ -153,7 +178,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_2PMT_1->SetName("pmt1");
     hist_2PMT_1->SetTitle("Response of OpCh31 & 33");
-    hist_2PMT_1->GetXaxis()->SetTitle("Distance [cm]");
+    hist_2PMT_1->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_2PMT_1->GetYaxis()->SetTitle("#photon / event");
     hist_2PMT_1->SetMarkerStyle(21);
     hist_2PMT_1->SetMarkerSize(1.0);
@@ -184,7 +209,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_22PMT_2->SetName("pmt2");
     hist_22PMT_2->SetTitle("Response of OpCh 12~15, 18~21, 24~29. 30, 32, 34~39");
-    hist_22PMT_2->GetXaxis()->SetTitle("Distance [cm]");
+    hist_22PMT_2->GetXaxis()->SetTitle("#Omega * 1000");
 	hist_22PMT_2->GetYaxis()->SetTitle("#photon / event");
     hist_22PMT_2->SetMarkerStyle(21);
     hist_22PMT_2->SetMarkerSize(1.0);
@@ -199,6 +224,8 @@ int opCh_combine(string input_path, string input_name, string output_path){
     // Write the combined histogram to the new ROOT file
     hist_cathode8XA->Write();
     hist_m4XA_1->Write();   
+    hist_m2XA_1->Write();
+    hist_m2XA_2->Write();
     hist_m4XA_2->Write();
     hist_2PMT_1->Write();
     hist_22PMT_2->Write();
