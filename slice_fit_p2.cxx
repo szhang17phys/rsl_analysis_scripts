@@ -773,12 +773,11 @@ void slice_fitTMP(const std::string& rsl){
 //Main function!============================================
 void slice_fit_p2(){
 
-    slice_fitTMP("rsl99");
-    slice_fitTMP("rsl50");
-    slice_fitTMP("rsl70");
-//    slice_fitTMP("rsl100");
+//    slice_fitTMP("rsl99");
+//    slice_fitTMP("rsl50");
+//    slice_fitTMP("rsl70");
     slice_fitTMP("rsl130");
-    slice_fitTMP("rsl150");    
+//    slice_fitTMP("rsl150");    
 
 }
 //=========================================================
