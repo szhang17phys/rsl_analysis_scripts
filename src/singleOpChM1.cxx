@@ -61,7 +61,7 @@ void singleOpChM1(string file_suffix, string output_path, Int_t opch, string opc
 
 
     for(Int_t i=0; i<40; ++i){
-        Opch_counts[i] = new TH1F("h_PhotonAtOpch " + TString(to_string(i)), "h_PhotonAtOpch " + TString(to_string(i)), 2000, 0, 1000000); 
+        Opch_counts[i] = new TH1F("h_PhotonAtOpch " + TString(to_string(i)), "h_PhotonAtOpch " + TString(to_string(i)), 500000, 0, 1000000); 
     }
 
     //Read in ROOT file and get OpDets TTree---
@@ -124,19 +124,17 @@ void singleOpChM1(string file_suffix, string output_path, Int_t opch, string opc
         CrtCut->GetEntry(i);
         hist_energyB->Fill(energy);//fill before cut judgement---
 
-        if(cross){
+/*        if(cross){
             cout<<"\nIt went through bot CRT!\n"<<endl;
             pass++;
         }
         else{ 
             cout<<"\nOUT!\n"<<endl;
             continue; 
-
-//If continue above is used, only events going through both crts be recorded---
-//Feb 20, 2024---
-
+            //If continue above is used, only events going through both crts be recorded---
+            //Feb 20, 2024---
         }
-
+*/
         hist_energyA->Fill(energy);//fill after cut judgement---
 
         OpEvents->GetEntry(i);//For counts vs energy plot--- 
