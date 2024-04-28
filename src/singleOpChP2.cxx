@@ -41,8 +41,8 @@ void singleOpChP2(string file_suffix, string output_path, Int_t opch, string opc
 
     //(P2)For all left PMTs, 12~15, 18~21, 24~29, 30, 32, 34~39---
     //Old: 100, 0, 2000; Current: 100, 0, 50000
-    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 6, 800, 0, 2000);        
-
+    TH2F* CRT_XA_response = new TH2F("CRT_Opch", "CRT_Opch", 60, 0, 12, 800, 0, 2000);        
+    TH2F* CRT_XA_distance = new TH2F("dis_angle", "dis_angle", 600, 0, 12, 600, 0, 600);//solid angle---
 
     for(Int_t i=0; i<40; ++i){
         Opch_counts[i] = new TH1F("h_PhotonAtOpch " + TString(to_string(i)), "h_PhotonAtOpch " + TString(to_string(i)), 2000, 0, 1000000); 
@@ -61,6 +61,7 @@ void singleOpChP2(string file_suffix, string output_path, Int_t opch, string opc
     Int_t pass = 0;
 
     Double_t distance;//distance between point and line---
+    Double_t distanceR;
     Point3D Opch_center = {0.0, 0.0, 0.0};//Initialization---
     Point3D CRT_start = {0.0, 0.0, 0.0};
     Point3D CRT_end = {0.0, 0.0, 0.0};    
@@ -118,9 +119,11 @@ void singleOpChP2(string file_suffix, string output_path, Int_t opch, string opc
                 CRT_end.y   = CRTBot_posY;
                 CRT_end.z   = CRTBot_posZ;
 //                distance = distance_point_line(Opch_center, CRT_start, CRT_end);
-                distance = solid_angle(Opch_center, CRT_start, CRT_end);//new "distance", solid angle---
+                distance = solid_angle2(Opch_center, CRT_start, CRT_end);//new "distance", solid angle---
+                distanceR = distance_point_line(Opch_center, CRT_start, CRT_end);
 
                 CRT_XA_response->Fill(distance, CountDetected);
+                CRT_XA_distance->Fill(distance, distanceR);
             }
 
         }
@@ -145,11 +148,18 @@ void singleOpChP2(string file_suffix, string output_path, Int_t opch, string opc
    
     //CRT_XA_response->SetTitle("Photon counts vs distance to cosmic muon track");
     CRT_XA_response->SetTitle(TString(opch_string));
-    CRT_XA_response->GetXaxis()->SetTitle("#Omega * 1000");
+    CRT_XA_response->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     CRT_XA_response->GetYaxis()->SetTitle("#photon / event");
     CRT_XA_response->SetMarkerStyle(21);
     CRT_XA_response->SetMarkerSize(1.0);
     CRT_XA_response->Write();
+
+    CRT_XA_distance->SetTitle(TString(opch_string));
+	CRT_XA_distance->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
+	CRT_XA_distance->GetYaxis()->SetTitle("Distance [cm]");
+    CRT_XA_distance->SetMarkerStyle(21);
+    CRT_XA_distance->SetMarkerSize(1.0);
+    CRT_XA_distance->Write();
     //-------------------------------------------------------
 
     f_out->Write();

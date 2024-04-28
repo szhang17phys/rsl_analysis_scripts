@@ -1,0 +1,3 @@
+#Created by Shu, 202404a27---
+
+The new distance is just the solid angle respect to shortest point

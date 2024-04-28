@@ -103,7 +103,55 @@ int opCh_combine(string input_path, string input_name, string output_path){
     TH2F *hist39 = dynamic_cast<TH2F*>(file39->Get("CRT_Opch"));
 
    
-    //Create new hist to store cathode 8 XAs-----------------------
+
+    //used to store distance angle relation----------
+    TH2F *dis01 = dynamic_cast<TH2F*>(file01->Get("dis_angle"));    
+    TH2F *dis03 = dynamic_cast<TH2F*>(file03->Get("dis_angle"));
+    
+    TH2F *dis04 = dynamic_cast<TH2F*>(file04->Get("dis_angle"));
+    TH2F *dis05 = dynamic_cast<TH2F*>(file05->Get("dis_angle"));
+    TH2F *dis06 = dynamic_cast<TH2F*>(file06->Get("dis_angle"));
+    TH2F *dis07 = dynamic_cast<TH2F*>(file07->Get("dis_angle"));
+    TH2F *dis08 = dynamic_cast<TH2F*>(file08->Get("dis_angle"));
+    TH2F *dis09 = dynamic_cast<TH2F*>(file09->Get("dis_angle"));
+    TH2F *dis10 = dynamic_cast<TH2F*>(file10->Get("dis_angle"));
+    TH2F *dis11 = dynamic_cast<TH2F*>(file11->Get("dis_angle"));
+
+    TH2F *dis12 = dynamic_cast<TH2F*>(file12->Get("dis_angle"));
+    TH2F *dis13 = dynamic_cast<TH2F*>(file13->Get("dis_angle"));
+    TH2F *dis14 = dynamic_cast<TH2F*>(file14->Get("dis_angle"));
+    TH2F *dis15 = dynamic_cast<TH2F*>(file15->Get("dis_angle"));
+
+    TH2F *dis16 = dynamic_cast<TH2F*>(file16->Get("dis_angle"));
+
+    TH2F *dis18 = dynamic_cast<TH2F*>(file18->Get("dis_angle"));
+    TH2F *dis19 = dynamic_cast<TH2F*>(file19->Get("dis_angle"));
+    TH2F *dis20 = dynamic_cast<TH2F*>(file20->Get("dis_angle"));
+    TH2F *dis21 = dynamic_cast<TH2F*>(file21->Get("dis_angle"));
+
+    TH2F *dis22 = dynamic_cast<TH2F*>(file22->Get("dis_angle"));
+
+    TH2F *dis24 = dynamic_cast<TH2F*>(file24->Get("dis_angle"));
+    TH2F *dis25 = dynamic_cast<TH2F*>(file25->Get("dis_angle"));
+    TH2F *dis26 = dynamic_cast<TH2F*>(file26->Get("dis_angle"));
+    TH2F *dis27 = dynamic_cast<TH2F*>(file27->Get("dis_angle"));
+    TH2F *dis28 = dynamic_cast<TH2F*>(file28->Get("dis_angle"));
+    TH2F *dis29 = dynamic_cast<TH2F*>(file29->Get("dis_angle"));
+
+    TH2F *dis30 = dynamic_cast<TH2F*>(file30->Get("dis_angle"));
+
+    TH2F *dis32 = dynamic_cast<TH2F*>(file32->Get("dis_angle"));
+
+    TH2F *dis34 = dynamic_cast<TH2F*>(file34->Get("dis_angle"));
+    TH2F *dis35 = dynamic_cast<TH2F*>(file35->Get("dis_angle"));
+    TH2F *dis36 = dynamic_cast<TH2F*>(file36->Get("dis_angle"));
+    TH2F *dis37 = dynamic_cast<TH2F*>(file37->Get("dis_angle"));
+    TH2F *dis38 = dynamic_cast<TH2F*>(file38->Get("dis_angle"));
+    TH2F *dis39 = dynamic_cast<TH2F*>(file39->Get("dis_angle"));
+
+
+
+    //Create new hist to store cathode 8 XAs---------------------------
     TH2F *hist_cathode8XA = new TH2F(*hist04);
     hist_cathode8XA->Add(hist05);
     hist_cathode8XA->Add(hist06);
@@ -115,10 +163,28 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_cathode8XA->SetName("cathode8XA");
     hist_cathode8XA->SetTitle("Response of Cathode 8 XAs");
-    hist_cathode8XA->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_cathode8XA->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_cathode8XA->GetYaxis()->SetTitle("#photon / event");
     hist_cathode8XA->SetMarkerStyle(21);
     hist_cathode8XA->SetMarkerSize(1.0);
+
+
+    TH2F *dis_cathode8XA = new TH2F(*dis04);
+    dis_cathode8XA->Add(dis05);
+    dis_cathode8XA->Add(dis06);
+    dis_cathode8XA->Add(dis07);
+    dis_cathode8XA->Add(dis08);
+    dis_cathode8XA->Add(dis09);
+    dis_cathode8XA->Add(dis10);
+    dis_cathode8XA->Add(dis11);
+
+    dis_cathode8XA->SetName("cathode8XA_angleDis");
+    dis_cathode8XA->SetTitle("Response of Cathode 8 XAs");
+    dis_cathode8XA->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
+	dis_cathode8XA->GetYaxis()->SetTitle("Distance [cm]");
+    dis_cathode8XA->SetMarkerStyle(21);
+    dis_cathode8XA->SetMarkerSize(1.0);
+
 
 
     //Create new hist to store XA: 0, 2, 17, 23-----------------------
@@ -129,7 +195,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m4XA_1->SetName("membrane1");
     hist_m4XA_1->SetTitle("Response of OpCh00, 02, 17 & 23");
-    hist_m4XA_1->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_m4XA_1->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_m4XA_1->GetYaxis()->SetTitle("#photon / event");
     hist_m4XA_1->SetMarkerStyle(21);
     hist_m4XA_1->SetMarkerSize(1.0);
@@ -141,7 +207,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m2XA_1->SetName("m1Up");
     hist_m2XA_1->SetTitle("Response of OpCh00 & 02");
-    hist_m2XA_1->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_m2XA_1->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_m2XA_1->GetYaxis()->SetTitle("#photon / event");
     hist_m2XA_1->SetMarkerStyle(21);
     hist_m2XA_1->SetMarkerSize(1.0);
@@ -153,7 +219,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m2XA_2->SetName("m1Down");
     hist_m2XA_2->SetTitle("Response of OpCh17 & 23");
-    hist_m2XA_2->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_m2XA_2->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_m2XA_2->GetYaxis()->SetTitle("#photon / event");
     hist_m2XA_2->SetMarkerStyle(21);
     hist_m2XA_2->SetMarkerSize(1.0);
@@ -167,10 +233,24 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_m4XA_2->SetName("membrane2");
     hist_m4XA_2->SetTitle("Response of OpCh01, 03, 16 & 22");
-    hist_m4XA_2->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_m4XA_2->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_m4XA_2->GetYaxis()->SetTitle("#photon / event");
     hist_m4XA_2->SetMarkerStyle(21);
     hist_m4XA_2->SetMarkerSize(1.0);
+
+
+    TH2F *dis_m4XA_2 = new TH2F(*dis01);
+    dis_m4XA_2->Add(dis03);
+    dis_m4XA_2->Add(dis16);
+    dis_m4XA_2->Add(dis22);
+
+    dis_m4XA_2->SetName("membrane2_angleDis");
+    dis_m4XA_2->SetTitle("Response of OpCh01, 03, 16 & 22");
+    dis_m4XA_2->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
+	dis_m4XA_2->GetYaxis()->SetTitle("Distance [cm]");
+    dis_m4XA_2->SetMarkerStyle(21);
+    dis_m4XA_2->SetMarkerSize(1.0);
+
 
     //Create new hist to store PMT: 31, 33-----------------------
     TH2F *hist_2PMT_1 = new TH2F(*hist31);
@@ -178,7 +258,7 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_2PMT_1->SetName("pmt1");
     hist_2PMT_1->SetTitle("Response of OpCh31 & 33");
-    hist_2PMT_1->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_2PMT_1->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_2PMT_1->GetYaxis()->SetTitle("#photon / event");
     hist_2PMT_1->SetMarkerStyle(21);
     hist_2PMT_1->SetMarkerSize(1.0);
@@ -209,10 +289,44 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     hist_22PMT_2->SetName("pmt2");
     hist_22PMT_2->SetTitle("Response of OpCh 12~15, 18~21, 24~29. 30, 32, 34~39");
-    hist_22PMT_2->GetXaxis()->SetTitle("#Omega * 1000");
+    hist_22PMT_2->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
 	hist_22PMT_2->GetYaxis()->SetTitle("#photon / event");
     hist_22PMT_2->SetMarkerStyle(21);
     hist_22PMT_2->SetMarkerSize(1.0);
+
+
+    TH2F *dis_22PMT_2 = new TH2F(*dis12);
+    dis_22PMT_2->Add(dis13);
+    dis_22PMT_2->Add(dis14);
+    dis_22PMT_2->Add(dis15);
+    dis_22PMT_2->Add(dis18);
+    dis_22PMT_2->Add(dis19);
+    dis_22PMT_2->Add(dis20);
+    dis_22PMT_2->Add(dis21);
+    dis_22PMT_2->Add(dis24);
+    dis_22PMT_2->Add(dis25);
+    dis_22PMT_2->Add(dis26);
+    dis_22PMT_2->Add(dis27);
+    dis_22PMT_2->Add(dis28);
+    dis_22PMT_2->Add(dis29);
+    dis_22PMT_2->Add(dis30);
+    dis_22PMT_2->Add(dis32);
+    dis_22PMT_2->Add(dis34);
+    dis_22PMT_2->Add(dis35);
+    dis_22PMT_2->Add(dis36);
+    dis_22PMT_2->Add(dis37);
+    dis_22PMT_2->Add(dis38);
+    dis_22PMT_2->Add(dis39);
+
+    dis_22PMT_2->SetName("pmt2_angleDis");
+    dis_22PMT_2->SetTitle("Response of OpCh 12~15, 18~21, 24~29. 30, 32, 34~39");
+    dis_22PMT_2->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
+	dis_22PMT_2->GetYaxis()->SetTitle("Distance [cm]");
+    dis_22PMT_2->SetMarkerStyle(21);
+    dis_22PMT_2->SetMarkerSize(1.0);
+
+
+
 
    //Create NEW root file--------------------------------------------------
     TFile *outputFile = new TFile(TString(output_path)+"Combine"+TString(input_name), "RECREATE");
@@ -223,12 +337,15 @@ int opCh_combine(string input_path, string input_name, string output_path){
 
     // Write the combined histogram to the new ROOT file
     hist_cathode8XA->Write();
+    dis_cathode8XA->Write();
     hist_m4XA_1->Write();   
     hist_m2XA_1->Write();
     hist_m2XA_2->Write();
     hist_m4XA_2->Write();
+    dis_m4XA_2->Write();
     hist_2PMT_1->Write();
     hist_22PMT_2->Write();
+    dis_22PMT_2->Write();
 
 
     delete file00;
@@ -295,3 +412,6 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+

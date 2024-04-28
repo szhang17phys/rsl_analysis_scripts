@@ -191,5 +191,123 @@ double solid_angle(const Point3D& opch, const Point3D& top, const Point3D& bot){
 
 
 
+//solid angle to the shortest point===================================
+double solid_angle2(const Point3D& opch, const Point3D& top, const Point3D& bot){
+
+
+    //Store points of the track---
+    Point3D shortP= {0.0, 0.0, 0.0};//normal line of opch---;
+
+
+    //Vector representing the line segment---
+    Point3D trackV = {bot.x-top.x, bot.y-top.y, bot.z-top.z};
+
+    //Vector from the start of the segment to the point---
+    Point3D opchT = {opch.x-top.x, opch.y-top.y, opch.z-top.z};
+
+
+    double t = dotProduct(trackV, opchT) / magnitudeSquared(trackV);
+
+    //Check if the projection point is outside the line segment---
+    if(t < 0.0){
+        //The point is closest to the start of the segment---
+        shortP.x = top.x;
+        shortP.y = top.y;
+        shortP.z = top.z;
+    } 
+    else if(t > 1.0){
+        //The point is closest to the end of the segment---
+        shortP.x = bot.x;
+        shortP.y = bot.y;
+        shortP.z = bot.z;        
+    } 
+    else{
+        //The point is closest to a point on the segment---
+        shortP.x = top.x + t*trackV.x;
+        shortP.y = top.y + t*trackV.y;
+        shortP.z = top.z + t*trackV.z; 
+    }
+
+
+
+    //Solid angle calculation--------------------------
+    Point3D opchV = {0.0, 0.0, 0.0};//normal line of opch---
+    if(opch.y>400 && opch.x>-300){//opch 0, 2, 16, 22
+        opchV.x = 0.0;
+        opchV.y = -1.0;
+        opchV.z = 0.0;
+    }
+    if(opch.y<-400 && opch.x>-300){//opch 1, 3, 17, 23
+        opchV.x = 0.0;
+        opchV.y = 1.0;
+        opchV.z = 0.0;
+    }
+    if(opch.x<50 && opch.x>-50){//cathode xa
+        opchV.x = 1.0;
+        opchV.y = 0.0;
+        opchV.z = 0.0;
+    }
+    if(opch.x<-300){//ground pmts
+        opchV.x = 1.0;
+        opchV.y = 0.0;
+        opchV.z = 0.0;
+    }    
+    if(opch.z<-50 && opch.x>-300){//-z high pmts
+        opchV.x = 0.0;
+        opchV.y = 0.0;
+        opchV.z = 1.0;
+    }
+    if(opch.z>350 && opch.x>-300){//+z high pmts
+        opchV.x = 0.0;
+        opchV.y = 0.0;
+        opchV.z = -1.0;
+    }
+
+
+    double opArea = 0.0;//active area of opch---
+    if(opch.x<-300){//ground pmt
+        opArea = 314.1;//in units of cm^2---
+    }
+    else if(opch.z<-50 && opch.x>-300){//-z high pmts
+        opArea = 314.1;
+    }
+    else if(opch.z>350 && opch.x>-300){//+z high pmts
+        opArea = 314.1;
+    }
+    else{
+        opArea = 3600.0;
+    }
+
+
+    //point-line vector----------
+    Point3D pointL = {302, -417, 149};
+    pointL.x = shortP.x - opch.x;
+    pointL.y = shortP.y - opch.y;
+    pointL.z = shortP.z - opch.z;
+
+
+    //solid angle---
+    double solid = 0.0;
+    solid = opArea * cos(opchV, pointL) / magnitudeSquared(pointL);
+    solid = solid * 1000.0;
+
+    if(opch.x<50 && opch.x>-50){//cathode xa double-side active
+        solid = std::abs(solid);
+    }
+
+
+    //test---
+    std::cout<<"Shortest point: ("<<shortP.x<<", "<<shortP.y<<", "<<shortP.z<<")"<<std::endl;
+    std::cout<<"Shortest distance: "<<std::sqrt(magnitudeSquared(pointL))<<"\n"<<std::endl;
+
+
+    return solid;
+
+}
+
+
+
+
+
 
 #endif
