@@ -516,9 +516,9 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 //OLD Main function!---
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
-    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/combine_3000results/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/combine_3000results/";
     string file_suffix = rsl + "_3000num_e67_crtCut.root";
-    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/cathode/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/cathode/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
@@ -526,16 +526,16 @@ void slice_fitTMP(const std::string& rsl){
 
     //Choose the slice you want to look at!---
     //Define the X(distance) values where you want to extract data---
-    Double_t distances[60];
-    for (int i=0; i<60; ++i){
-        distances[i] = 5*i + 2.5;
+    Double_t distances[100];
+    for (int i=0; i<100; ++i){
+        distances[i] = 10*i + 5.0;
     }
     //--------------------------------------------------
 
     FitResults tmpResults; //used to tmporarily store fitResults---
-    Double_t mpvConv[60];
-    Double_t sigConv[60];
-    Int_t numHist[60];
+    Double_t mpvConv[100];
+    Double_t sigConv[100];
+    Int_t numHist[100];
 
 
     //Open the input root file----------------------------------------------------
@@ -557,7 +557,7 @@ void slice_fitTMP(const std::string& rsl){
     }
 
     //Create an array of TH1F histograms to store extracted data---
-    //num = 60 here!---
+    //num = 100 here!---
     const int num = sizeof(distances)/sizeof(distances[0]);
     TH1F* hists[num];
 
@@ -597,23 +597,16 @@ void slice_fitTMP(const std::string& rsl){
     for(int i=0; i<num; ++i){
         adjustXAxisBinWidth(hists[i], 1000.0);//now range is [0, 200] in units of 1000.
 
-        if( distances[i] < 30){//hist has 400 bins; initial 800
+        if( distances[i] < 200){//hist has 400 bins; initial 800
             combineBins(hists[i]);
             combineBins(hists[i]);
         }
-        if(30 <= distances[i] && distances[i] < 80){//hist has 200 bins; initial 800
-            combineBins(hists[i]);
-            combineBins(hists[i]);
-            combineBins(hists[i]);
-        }
-        if(80 <= distances[i] && distances[i] < 120){//hist has 100 bins
-            combineBins(hists[i]);
+        if(200 <= distances[i] && distances[i] < 300){//hist has 200 bins; initial 800
             combineBins(hists[i]);
             combineBins(hists[i]);
             combineBins(hists[i]);
         }
-        if(120 <= distances[i]){//hist has 50 bins
-            combineBins(hists[i]);
+        if(300 <= distances[i]){//hist has 100 bins
             combineBins(hists[i]);
             combineBins(hists[i]);
             combineBins(hists[i]);
@@ -726,7 +719,7 @@ void slice_fit(){
 //    slice_fitTMP("rsl99");
     slice_fitTMP("rsl50");
     slice_fitTMP("rsl70");
-//    slice_fitTMP("rsl130");      
+    slice_fitTMP("rsl130");      
     slice_fitTMP("rsl150");    
 
 }

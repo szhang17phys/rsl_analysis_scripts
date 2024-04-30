@@ -173,7 +173,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     scatterGraph->SetMarkerSize(0.6);
     scatterGraph->SetMarkerColor(kRed);
     scatterGraph->Draw("AP");
-    scatterGraph->GetXaxis()->SetTitle("#Omega * 1000");
+    scatterGraph->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     scatterGraph->GetYaxis()->SetTitle("#photon / event");
     scatterGraph->GetXaxis()->SetRangeUser(-60, 60);
 //    scatterGraph->GetYaxis()->SetRangeUser(0, 200000);
@@ -273,7 +273,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     graphDiff50->SetMarkerSize(0.6);
     graphDiff50->SetMarkerColor(kGreen);
     graphDiff50->Draw("AP");
-    graphDiff50->GetXaxis()->SetTitle("#Omega * 1000");
+    graphDiff50->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     graphDiff50->GetYaxis()->SetTitle("Photon Num Diff");
     graphDiff50->GetXaxis()->SetRangeUser(-60, 60);
 //    graphDiff50->GetYaxis()->SetRangeUser(-10000, 40000);
@@ -374,7 +374,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     graphBias50->SetMarkerSize(0.6);
     graphBias50->SetMarkerColor(kGreen);
     graphBias50->Draw("AP");
-    graphBias50->GetXaxis()->SetTitle("#Omega * 1000");
+    graphBias50->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     graphBias50->GetYaxis()->SetTitle(TString(titleY));
     graphBias50->GetXaxis()->SetRangeUser(-60, 60);
 
@@ -392,7 +392,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     graphBias70->SetMarkerSize(0.6);
     graphBias70->SetMarkerColor(kBlue);
     graphBias70->Draw("AP");
-    graphBias70->GetXaxis()->SetTitle("#Omega * 1000");
+    graphBias70->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     graphBias70->GetYaxis()->SetTitle(TString(titleY));
     graphBias70->GetXaxis()->SetRangeUser(-60, 60);
 //    graphBias70->Draw("P SAME");
@@ -411,7 +411,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     graphBias130->SetMarkerSize(0.6);
     graphBias130->SetMarkerColor(28);
     graphBias130->Draw("AP");
-    graphBias130->GetXaxis()->SetTitle("#Omega * 1000");
+    graphBias130->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     graphBias130->GetYaxis()->SetTitle(TString(titleY));
     graphBias130->GetXaxis()->SetRangeUser(-60, 60);
 //    graphBias130->Draw("P SAME");
@@ -430,7 +430,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
     graphBias150->SetMarkerSize(0.6);
     graphBias150->SetMarkerColor(kOrange);
     graphBias150->Draw("AP");
-    graphBias150->GetXaxis()->SetTitle("#Omega * 1000");
+    graphBias150->GetXaxis()->SetTitle("#Omega [10^{-3} sr]");
     graphBias150->GetYaxis()->SetTitle(TString(titleY));
     graphBias150->GetXaxis()->SetRangeUser(-60, 60);
 //    graphBias150->Draw("P SAME");
@@ -483,7 +483,7 @@ void rsl_compareTMP(const std::string& path, int biasLabel){
 void rsl_compare_p2(){
 
     //For membrane1---
-    rsl_compareTMP("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/pmt2", 1); //1: initial bias; 2: new bias
+    rsl_compareTMP("/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/pmt2", 1); //1: initial bias; 2: new bias
         
 
 }

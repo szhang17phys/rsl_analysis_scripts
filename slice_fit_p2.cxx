@@ -516,9 +516,9 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 //OLD Main function!---
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
-    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/combine_3000results/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/combine_3000results/";
     string file_suffix = rsl + "_3000num_e67_crtCut.root";
-    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/pmt2/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/pmt2/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
@@ -528,7 +528,7 @@ void slice_fitTMP(const std::string& rsl){
     //Define the X(distance) values where you want to extract data---
     Double_t distances[60];
     for (int i=0; i<60; ++i){
-        distances[i] = 0.1*i + 0.05;
+        distances[i] = 0.2*i + 0.1;
     }
     //--------------------------------------------------
 
@@ -598,11 +598,11 @@ void slice_fitTMP(const std::string& rsl){
         adjustXAxisBinWidth(hists[i], 1.0);//now range is [0, 200] in units of 1.0
 
 
-        if(0 <= distances[i] && distances[i] < 1){
+        if(0 <= distances[i] && distances[i] < 2){
             combineBins(hists[i]);
             combineBins(hists[i]);
         }
-        if(1 <= distances[i] && distances[i] < 6){
+        if(2 <= distances[i] && distances[i] < 12){
             combineBins(hists[i]);
             combineBins(hists[i]);
             combineBins(hists[i]);
@@ -636,30 +636,23 @@ void slice_fitTMP(const std::string& rsl){
 
 
         //single point correction------------------------------
-/*        if(rsl == "rsl99" && distances[i] == 47.5){
+        if(rsl == "rsl50" && distances[i] == 0.9){
             FitVars varsTMP = vars;
-            varsTMP.mpvIni = 13.0;
-            varsTMP.meanIni = 0.0;
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
+            varsTMP.mpvIni = 30.0;
+            varsTMP.meanIni = 30.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
-        else if(rsl == "rsl99" && distances[i] == 77.5){
+        else if(rsl == "rsl50" && distances[i] == 1.1){
             FitVars varsTMP = vars;
-            varsTMP.mpvIni = 22.0;
-            varsTMP.meanIni = 0.0;
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            varsTMP.sigmaIni = 4.0;
-            varsTMP.sigmaMin = 4.0;
-            varsTMP.sigmaMax = 4.0;
+            varsTMP.mpvIni = 30.0;
+            varsTMP.meanIni = 30.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
         else{            
-*/
+
             tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
 
-//        }
+        }
 
 
         mpvConv[i] = tmpResults.mpvC * 1.0;

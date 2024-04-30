@@ -516,9 +516,9 @@ void DrawScatterWithLine(TH2F* hist2D, const double* distances, const double* mp
 //OLD Main function!---
 void slice_fitTMP(const std::string& rsl){
     //change file name each time-----------------------
-    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/combine_3000results/";
+    string file_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/combine_3000results/";
     string file_suffix = rsl + "_3000num_e67_crtCut.root";
-    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance/membrane2/";
+    string output_path = "/Users/shuaixiangzhang/Work/current/FNAL_Work2024/rsl_analyses/v4_analysis/results/fit_Develop_newDistance2/membrane2/";
     string output_name = "fitCLG1";
 
     //store fitting results at txt file---
@@ -570,7 +570,7 @@ void slice_fitTMP(const std::string& rsl){
         //Create a TH1F for each extracted data---
         hists[i] = new TH1F(Form("hist_%d", i), Form("Distance = %.1f cm", x), inputTH2F->GetNbinsY(), inputTH2F->GetYaxis()->GetXmin(), inputTH2F->GetYaxis()->GetXmax());
 
-        hists[i]->GetXaxis()->SetTitle("# #gamma / 1000");
+        hists[i]->GetXaxis()->SetTitle("# #gamma");
         hists[i]->GetYaxis()->SetTitle("Event Rate");
 
         //Fill the TH1F with data from the TH2F---
@@ -633,30 +633,23 @@ void slice_fitTMP(const std::string& rsl){
 
 
         //single point correction------------------------------
-/*        if(rsl == "rsl99" && distances[i] == 47.5){
+        if(rsl == "rsl50" && distances[i] <= 8.7){
             FitVars varsTMP = vars;
-            varsTMP.mpvIni = 13.0;
-            varsTMP.meanIni = 0.0;
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
+            varsTMP.mpvIni = 40.0;
+            varsTMP.meanIni = 40.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
-        else if(rsl == "rsl99" && distances[i] == 77.5){
+        else if(rsl == "rsl130" && distances[i] == 10.7){
             FitVars varsTMP = vars;
-            varsTMP.mpvIni = 22.0;
-            varsTMP.meanIni = 0.0;
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            varsTMP.sigmaIni = 4.0;
-            varsTMP.sigmaMin = 4.0;
-            varsTMP.sigmaMax = 4.0;
+            varsTMP.mpvIni = 300.0;
+            varsTMP.meanIni = 250.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
         else{            
-*/
+
             tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
 
-//        }
+        }
 
 
         mpvConv[i] = tmpResults.mpvC * 1.0;
@@ -709,8 +702,9 @@ void slice_fit_m2(){
 
 //    slice_fitTMP("rsl99");
     slice_fitTMP("rsl50");
-    slice_fitTMP("rsl70");
-    slice_fitTMP("rsl150");    
+//    slice_fitTMP("rsl70");
+    slice_fitTMP("rsl130");
+//    slice_fitTMP("rsl150");    
 
 }
 //=========================================================
