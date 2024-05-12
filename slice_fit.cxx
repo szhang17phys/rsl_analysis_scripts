@@ -630,7 +630,7 @@ void slice_fitTMP(const std::string& rsl){
         vars.fitRangeMax = borderR;
 
         vars.mpvIni = 10.0;
-        vars.mpvMin = 1.0;
+        vars.mpvMin = 0.1;
         vars.mpvMax = 200.0;
 
         vars.widthIni = 5.0;//Landau width---
@@ -638,7 +638,7 @@ void slice_fitTMP(const std::string& rsl){
         vars.widthMax = 100.0;
 
         vars.meanIni = 10.0;
-        vars.meanMin = 1.0;
+        vars.meanMin = 0.1;
         vars.meanMax = 200.0;
 
         vars.sigmaIni = 5.0;
@@ -685,10 +685,32 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 6.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
+        else if(rsl == "rsl99" && distances[i] == 185){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;
+            varsTMP.meanMin = 0.0;
+            varsTMP.meanMax = 0.0;
+            varsTMP.mpvIni = 8.5;
+            varsTMP.mpvMin = 8.0;
+            varsTMP.mpvMax = 8.6;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }   
+        else if(rsl == "rsl99" && distances[i] == 195){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.0;
+            varsTMP.mpvIni = 4.4;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }   
         else if(rsl == "rsl99" && distances[i] == 215){
             FitVars varsTMP = vars;
             varsTMP.meanIni = 3.0;
-            varsTMP.mpvIni = 3.0;
+            varsTMP.mpvIni = 4.0;
+            varsTMP.sigmaIni = 0.7;
+            varsTMP.widthIni = 0.1;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }   
         else if(rsl == "rsl99" && distances[i] == 225){
@@ -697,6 +719,14 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 3.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }  
+        else if(rsl == "rsl99" && distances[i] == 235){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 4.0;
+            varsTMP.mpvIni = 3.0;
+            varsTMP.sigmaIni = 0.5;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
         else if(rsl == "rsl99" && distances[i] == 245){
             FitVars varsTMP = vars;
             varsTMP.meanIni = 3.0;
@@ -721,6 +751,14 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.meanIni = 15.0;
             varsTMP.mpvIni = 15.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl50" && distances[i] == 205){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 3.5;
+            varsTMP.mpvIni = 3.5;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }          
         else if(rsl == "rsl50" && distances[i] == 215){
             FitVars varsTMP = vars;
@@ -734,6 +772,18 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 3.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
+      else if(rsl == "rsl50" && distances[i] == 235){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 2.25;
+            varsTMP.meanMin = 2.2;
+            varsTMP.meanMax = 2.3;
+            varsTMP.mpvIni = 3.0;
+            varsTMP.mpvMin = 3.0;
+            varsTMP.mpvMax = 3.0;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }   
 
         else if(rsl == "rsl70" && distances[i] == 15){
             FitVars varsTMP = vars;
@@ -796,16 +846,32 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 15.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }
-        else if(rsl == "rsl130" && distances[i] == 215){
+        else if(rsl == "rsl130" && distances[i] == 115){
             FitVars varsTMP = vars;
-            varsTMP.meanIni = 3.0;
-            varsTMP.mpvIni = 4.0;
+            varsTMP.meanIni = 0.0;
+            varsTMP.mpvIni = 17.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
-        else if(rsl == "rsl130" && distances[i] == 225){
+        else if(rsl == "rsl130" && distances[i] == 185){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 7.0;
+            varsTMP.mpvIni = 2.0;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }
+        else if(rsl == "rsl130" && distances[i] == 205){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 5.0;
+            varsTMP.mpvIni = 5.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else if(rsl == "rsl130" && distances[i] == 235){
             FitVars varsTMP = vars;
             varsTMP.meanIni = 3.0;
             varsTMP.mpvIni = 4.0;
+            varsTMP.sigmaIni = 0.5;
+            varsTMP.widthIni = 0.1;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
 
@@ -827,18 +893,26 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 15.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }    
-        else if(rsl == "rsl150" && distances[i] == 85){
-            FitVars varsTMP = vars;
-            varsTMP.meanIni = 0.0;
-            varsTMP.meanMin = 0.0;
-            varsTMP.meanMax = 0.0;
-            varsTMP.mpvIni = 22.0;
-            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
-        }  
         else if(rsl == "rsl150" && distances[i] == 125){
             FitVars varsTMP = vars;
             varsTMP.meanIni = 0.0;
             varsTMP.mpvIni = 15.0;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }  
+        else if(rsl == "rsl150" && distances[i] == 135){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 6.0;
+            varsTMP.meanMin = 6.0;
+            varsTMP.meanMax = 1.5;
+            varsTMP.mpvIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }   
+        else if(rsl == "rsl150" && distances[i] == 215){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 5.0;
+            varsTMP.meanMin = 2.0;
+            varsTMP.meanMax = 0.4;
+            varsTMP.mpvIni = 0.2;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         }      
         else if(rsl == "rsl150" && distances[i] == 225){
@@ -847,6 +921,18 @@ void slice_fitTMP(const std::string& rsl){
             varsTMP.mpvIni = 4.0;
             tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
         } 
+        else if(rsl == "rsl150" && distances[i] == 185){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 4.85;
+            varsTMP.meanMin = 4.7;
+            varsTMP.meanMax = 5.0;
+            varsTMP.mpvIni = 4.0;
+            varsTMP.mpvMin = 4.0;
+            varsTMP.mpvMax = 4.0;
+            varsTMP.sigmaIni = 1.0;
+            varsTMP.widthIni = 0.1;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        }     
         else if(rsl == "rsl150" && distances[i] == 245){
             FitVars varsTMP = vars;
             varsTMP.meanIni = 0;
@@ -903,10 +989,10 @@ void slice_fitTMP(const std::string& rsl){
 //New Main function========================================
 void slice_fit(){
 
-    slice_fitTMP("rsl99");
-    slice_fitTMP("rsl50");
-    slice_fitTMP("rsl70");
-    slice_fitTMP("rsl130");      
+//    slice_fitTMP("rsl99");
+//    slice_fitTMP("rsl50");
+//    slice_fitTMP("rsl70");
+//    slice_fitTMP("rsl130");      
     slice_fitTMP("rsl150");    
 
 }
