@@ -606,7 +606,7 @@ void slice_fitTMP2(const std::string& rsl){
         vars.mpvMin = 1.0;
         vars.mpvMax = 1000.0;
 
-        vars.widthIni = 50.0;
+        vars.widthIni = 50.0;//Landau width---
         vars.widthMin = 0.01;
         vars.widthMax = 800.0;
 
@@ -621,7 +621,18 @@ void slice_fitTMP2(const std::string& rsl){
         string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
         const char * name = nameS.c_str();
 
-        tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+        if(rsl == "rsl50" && distances[i] == 465.0){
+            FitVars varsTMP = vars;
+            varsTMP.meanIni = 0.0;//Apply N(0, width)---
+            varsTMP.mpvIni = 150;
+            varsTMP.widthIni = 15.0;
+            varsTMP.sigmaIni = 0.5;
+            tmpResults = CLG1(hists[i], outputFile, varsTMP, name); 
+        } 
+        else{
+            tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+        }
+
 
         mpvConv[i] = tmpResults.mpvC * 1.0;
         sigConv[i] = tmpResults.sigC * 1.0;
@@ -794,7 +805,11 @@ void slice_fitTMP(const std::string& rsl, const std::string& opch){
         string nameS = "Distance = " + std::to_string(distances[i]) +"cm";
         const char * name = nameS.c_str();
 
+
         tmpResults = CLG1(hists[i], outputFile, vars, name);//core, fit function---
+
+
+
 
         mpvConv[i] = tmpResults.mpvC * 1.0;
         sigConv[i] = tmpResults.sigC * 1.0;
@@ -859,9 +874,10 @@ void slice_fit_m2(){
 */
 
     //For combined opch---
+    slice_fitTMP2("rsl50");
 //    slice_fitTMP2("rsl70");
-    slice_fitTMP2("rsl130");
-    slice_fitTMP2("rsl150");
+//    slice_fitTMP2("rsl130");
+//    slice_fitTMP2("rsl150");
 //    slice_fitTMP2("rsl99");
 }
 //=========================================================
